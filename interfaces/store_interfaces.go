@@ -2,7 +2,7 @@ package interfaces
 
 import (
 	"github.com/google/uuid"
-	"mod/db"
+	"go-backend/db"
 )
 
 type CryptoStore interface {

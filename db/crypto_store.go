@@ -6,8 +6,9 @@ import (
 )
 
 type Crypto struct {
-	Id   uuid.UUID
-	Name string
+	Id          uuid.UUID `db:"id"`
+	Name        string    `db:"name"`
+	Description string    `db:"description"`
 }
 
 type CryptoStore struct {
@@ -17,7 +18,7 @@ type CryptoStore struct {
 func (s *CryptoStore) Crypto(id uuid.UUID) (Crypto, error) {
 	var c Crypto
 
-	if err := s.Get(&c, "SELECT * FROM crytpo WHERE id = $1", id); err != nil {
+	if err := s.Get(&c, "SELECT * FROM crypto WHERE id = $1", id); err != nil {
 		return Crypto{}, err
 	}
 
@@ -25,7 +26,7 @@ func (s *CryptoStore) Crypto(id uuid.UUID) (Crypto, error) {
 }
 
 func (s *CryptoStore) CreateCrypto(c *Crypto) error {
-	if err := s.Get(&c, "INSERT INTO crytpo VALUES ($1, $2, $3) RETURNING *"); err != nil {
+	if err := s.Get(&c, "INSERT INTO crypto VALUES ($1, $2, $3) RETURNING *"); err != nil {
 		return err
 	}
 

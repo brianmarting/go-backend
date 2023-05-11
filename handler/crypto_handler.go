@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"mod/db"
-	"mod/interfaces"
+	"go-backend/db"
+	"go-backend/interfaces"
 	"net/http"
 )
 

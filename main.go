@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/go-chi/chi/v5/middleware"
+	"go-backend/db"
+	"go-backend/handler"
+	"go-backend/interfaces"
 	"log"
-	"mod/db"
-	"mod/handler"
-	"mod/interfaces"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -18,7 +18,7 @@ type Handler struct {
 }
 
 func main() {
-	store, err := db.NewStore("postgres://postgres:secret@localhost/postgres?sslmode=disable")
+	store, err := db.NewStore("postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
