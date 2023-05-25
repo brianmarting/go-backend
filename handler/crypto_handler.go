@@ -10,7 +10,7 @@ import (
 )
 
 type CryptoHandler struct {
-	Store interfaces.Store
+	Store interfaces.CryptoStore
 }
 
 func (c *CryptoHandler) Get() http.HandlerFunc {

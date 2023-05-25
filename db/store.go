@@ -18,10 +18,14 @@ func NewStore(driverName string) (*Store, error) {
 	}
 
 	return &Store{
-		CryptoStore: &CryptoStore{DB: db},
+		CryptoStore:       &CryptoStore{DB: db},
+		WalletStore:       &WalletStore{DB: db},
+		WalletCryptoStore: &WalletCryptoStore{DB: db},
 	}, nil
 }
 
 type Store struct {
 	*CryptoStore
+	*WalletStore
+	*WalletCryptoStore
 }
