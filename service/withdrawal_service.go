@@ -7,17 +7,23 @@ import (
 )
 
 type WithdrawalService struct {
+	CryptoStore       interfaces.CryptoStore
 	WalletStore       interfaces.WalletStore
 	WalletCryptoStore interfaces.WalletCryptoStore
 }
 
 func (s *WithdrawalService) Withdraw(wr model.WithdrawRequest) error {
+	crypto, err := s.CryptoStore.Crypto(wr.CryptoId)
+	if err != nil {
+		return err
+	}
+
 	walletFrom, err := s.WalletStore.ByAddress(wr.FromAddress)
 	if err != nil {
 		return err
 	}
 
-	walletCryptoFrom, err := s.WalletCryptoStore.FindByWalletIdAndCryptoId(walletFrom.Id, wr.CryptoId)
+	walletCryptoFrom, err := s.WalletCryptoStore.FindByWalletIdAndCryptoId(walletFrom.Id, crypto.Id)
 	if err != nil {
 		return err
 	}
@@ -34,7 +40,7 @@ func (s *WithdrawalService) Withdraw(wr model.WithdrawRequest) error {
 		return err
 	}
 
-	walletCryptoTo, err := s.WalletCryptoStore.FindByWalletIdAndCryptoId(walletTo.Id, wr.CryptoId)
+	walletCryptoTo, err := s.WalletCryptoStore.FindByWalletIdAndCryptoId(walletTo.Id, crypto.Id)
 	if err != nil {
 		return err
 	}

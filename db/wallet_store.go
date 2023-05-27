@@ -6,7 +6,8 @@ import (
 )
 
 type Wallet struct {
-	Id      uuid.UUID `db:"id"`
+	Id      int       `db:"id"`
+	Uuid    uuid.UUID `db:"uuid"`
 	Address string    `db:"address"`
 }
 
@@ -17,7 +18,7 @@ type WalletStore struct {
 func (s *WalletStore) Wallet(id uuid.UUID) (Wallet, error) {
 	var w Wallet
 
-	if err := s.Get(&w, "SELECT * FROM wallet WHERE id = $1", id); err != nil {
+	if err := s.Get(&w, "SELECT * FROM wallet WHERE uuid = $1", id); err != nil {
 		return Wallet{}, err
 	}
 
@@ -35,7 +36,7 @@ func (s *WalletStore) ByAddress(address string) (Wallet, error) {
 }
 
 func (s *WalletStore) CreateWallet(w *Wallet) error {
-	if err := s.Get(&w, "INSERT INTO wallet VALUES ($1, $2) RETURNING *"); err != nil {
+	if err := s.Get(&w, "INSERT INTO wallet (uuid, address) VALUES ($1, $2) RETURNING *"); err != nil {
 		return err
 	}
 

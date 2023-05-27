@@ -37,7 +37,7 @@ func (c *CryptoHandler) Get() http.HandlerFunc {
 func (c *CryptoHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		crypto := &db.Crypto{
-			Id:   uuid.New(),
+			Uuid: uuid.New(),
 			Name: r.FormValue("name"),
 		}
 

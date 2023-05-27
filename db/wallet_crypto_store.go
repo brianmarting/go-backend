@@ -6,9 +6,10 @@ import (
 )
 
 type WalletCrypto struct {
-	Id       uuid.UUID `db:"id"`
-	WalletId uuid.UUID `db:"wallet_id"`
-	CryptoId uuid.UUID `db:"crypto_id"`
+	Id       int       `db:"id"`
+	Uuid     uuid.UUID `db:"uuid"`
+	WalletId int       `db:"wallet_id"`
+	CryptoId int       `db:"crypto_id"`
 	Amount   int       `db:"amount"`
 }
 
@@ -16,7 +17,7 @@ type WalletCryptoStore struct {
 	*sqlx.DB
 }
 
-func (s *WalletCryptoStore) FindByWalletIdAndCryptoId(walletId uuid.UUID, cryptoId uuid.UUID) (WalletCrypto, error) {
+func (s *WalletCryptoStore) FindByWalletIdAndCryptoId(walletId int, cryptoId int) (WalletCrypto, error) {
 	var wc WalletCrypto
 
 	if err := s.Get(&wc, "SELECT * FROM wallet_crypto WHERE wallet_id = $1 AND crypto_id = $2", walletId, cryptoId); err != nil {
@@ -26,7 +27,7 @@ func (s *WalletCryptoStore) FindByWalletIdAndCryptoId(walletId uuid.UUID, crypto
 	return wc, nil
 }
 
-func (s *WalletCryptoStore) SetAmountByWalletId(walletId uuid.UUID, amount int) error {
+func (s *WalletCryptoStore) SetAmountByWalletId(walletId int, amount int) error {
 	_, err := s.Exec("UPDATE wallet_crypto SET amount = $1 WHERE wallet_id = $2", amount, walletId)
 
 	return err

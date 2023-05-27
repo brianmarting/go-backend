@@ -18,8 +18,8 @@ type WalletStore interface {
 }
 
 type WalletCryptoStore interface {
-	FindByWalletIdAndCryptoId(walletId uuid.UUID, cryptoId uuid.UUID) (db.WalletCrypto, error)
-	SetAmountByWalletId(walletId uuid.UUID, amount int) error
+	FindByWalletIdAndCryptoId(walletId int, cryptoId int) (db.WalletCrypto, error)
+	SetAmountByWalletId(walletId int, amount int) error
 }
 
 type Store interface {

@@ -6,6 +6,7 @@ import (
 	"go-backend/goroutines"
 	"go-backend/handler"
 	"go-backend/interfaces"
+	"go-backend/service"
 	"log"
 	"net/http"
 
@@ -41,7 +42,12 @@ func newHandler(store interfaces.Store) *Handler {
 		WalletStore:       store,
 		WalletCryptoStore: store,
 	}
-	goroutines.StartDispatcher(1)
+	withdrawalService := service.WithdrawalService{
+		CryptoStore:       store,
+		WalletStore:       store,
+		WalletCryptoStore: store,
+	}
+	goroutines.StartDispatcher(1, withdrawalService)
 
 	cryptoHandler := handler.CryptoHandler{Store: store}
 	walletHandler := handler.WalletHandler{Store: store}
@@ -50,15 +56,15 @@ func newHandler(store interfaces.Store) *Handler {
 		router.Get("/{id}", cryptoHandler.Get())
 		router.Post("/", cryptoHandler.Create())
 		router.Post("/{id}/delete", cryptoHandler.Delete())
-	})
 
-	h.Route("/wallet", func(router chi.Router) {
-		router.Get("/{id}", walletHandler.Get())
-		router.Post("/", walletHandler.Create())
-	})
+		router.Route("/wallet", func(router chi.Router) {
+			router.Get("/{id}", walletHandler.Get())
+			router.Post("/", walletHandler.Create())
+		})
 
-	h.Route("/withdraw", func(router chi.Router) {
-		router.Post("/", withdrawalHandler.Withdraw())
+		router.Route("/withdraw", func(router chi.Router) {
+			router.Post("/", withdrawalHandler.Withdraw())
+		})
 	})
 
 	return h

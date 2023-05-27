@@ -14,12 +14,13 @@ type Worker struct {
 	withdrawalService   service.WithdrawalService
 }
 
-func NewWorker(id int, workerQueue chan chan model.WithdrawRequest) Worker {
+func NewWorker(id int, workerQueue chan chan model.WithdrawRequest, withdrawalService service.WithdrawalService) Worker {
 	return Worker{
 		Id:                  id,
 		Work:                make(chan model.WithdrawRequest),
 		WithdrawWorkerQueue: workerQueue,
 		QuitChan:            make(chan bool),
+		withdrawalService:   withdrawalService,
 	}
 }
 

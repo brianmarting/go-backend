@@ -37,7 +37,7 @@ func (h *WalletHandler) Get() http.HandlerFunc {
 func (h *WalletHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		wallet := &db.Wallet{
-			Id:      uuid.New(),
+			Uuid:    uuid.New(),
 			Address: uuid.NewString(),
 		}
 

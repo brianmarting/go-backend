@@ -1,12 +1,11 @@
 package handler
 
 import (
-	"github.com/google/uuid"
+	"encoding/json"
 	"go-backend/goroutines"
 	"go-backend/interfaces"
 	"go-backend/model"
 	"net/http"
-	"strconv"
 )
 
 type WithdrawalHandler struct {
@@ -16,30 +15,11 @@ type WithdrawalHandler struct {
 
 func (h *WithdrawalHandler) Withdraw() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cryptoIdString := r.FormValue("cryptoId")
+		var withdrawRequest model.WithdrawRequest
 
-		cryptoId, err := uuid.Parse(cryptoIdString)
-
-		if err != nil {
+		if err := json.NewDecoder(r.Body).Decode(&withdrawRequest); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
-		}
-
-		fromAddress := r.FormValue("fromAddress")
-		toAddress := r.FormValue("toAddress")
-		amountString := r.FormValue("amount")
-		amount, err := strconv.Atoi(amountString)
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		withdrawRequest := model.WithdrawRequest{
-			CryptoId:    cryptoId,
-			FromAddress: fromAddress,
-			ToAddress:   toAddress,
-			Amount:      amount,
 		}
 
 		goroutines.WithdrawalQueue <- withdrawRequest
