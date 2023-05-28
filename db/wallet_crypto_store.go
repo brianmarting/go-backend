@@ -14,7 +14,7 @@ type WalletCrypto struct {
 }
 
 type WalletCryptoStore struct {
-	*sqlx.DB
+	*sqlx.DB `di.inject:"sqlxDB"`
 }
 
 func (s *WalletCryptoStore) FindByWalletIdAndCryptoId(walletId int, cryptoId int) (WalletCrypto, error) {

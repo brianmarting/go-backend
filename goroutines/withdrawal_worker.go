@@ -1,7 +1,7 @@
 package goroutines
 
 import (
-	"fmt"
+	"github.com/goioc/di"
 	"github.com/rs/zerolog/log"
 	"go-backend/model"
 	"go-backend/service"
@@ -12,16 +12,16 @@ type Worker struct {
 	Work                chan model.WithdrawRequest
 	WithdrawWorkerQueue chan chan model.WithdrawRequest
 	QuitChan            chan bool
-	withdrawalService   service.WithdrawalService
+	withdrawalService   *service.WithdrawalService
 }
 
-func NewWorker(id int, workerQueue chan chan model.WithdrawRequest, withdrawalService service.WithdrawalService) Worker {
+func NewWorker(id int, workerQueue chan chan model.WithdrawRequest) Worker {
 	return Worker{
 		Id:                  id,
 		Work:                make(chan model.WithdrawRequest),
 		WithdrawWorkerQueue: workerQueue,
 		QuitChan:            make(chan bool),
-		withdrawalService:   withdrawalService,
+		withdrawalService:   di.GetInstance("withdrawalService").(*service.WithdrawalService),
 	}
 }
 
@@ -35,7 +35,7 @@ func (w *Worker) Start() {
 				log.Info().Msg("Worker will start withdrawing")
 
 				if err := w.withdrawalService.Withdraw(withdrawRequest); err != nil {
-					fmt.Errorf("an error ocurred when withdrawing %g", err)
+					log.Err(err).Msg("an error ocurred when withdrawing")
 				}
 			case <-w.QuitChan:
 				return

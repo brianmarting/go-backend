@@ -3,18 +3,17 @@ package goroutines
 import (
 	"github.com/rs/zerolog/log"
 	"go-backend/model"
-	"go-backend/service"
 )
 
 var WithdrawalQueue = make(chan model.WithdrawRequest, 100)
 
 var WithdrawalWorkerQueue chan chan model.WithdrawRequest
 
-func StartDispatcher(amount int, withdrawalService service.WithdrawalService) {
+func StartDispatcher(amount int) {
 	WithdrawalWorkerQueue = make(chan chan model.WithdrawRequest, 5)
 
 	for i := 0; i < amount; i++ {
-		worker := NewWorker(i, WithdrawalWorkerQueue, withdrawalService)
+		worker := NewWorker(i, WithdrawalWorkerQueue)
 		worker.Start()
 	}
 
