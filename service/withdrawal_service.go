@@ -13,12 +13,12 @@ type WithdrawalService struct {
 }
 
 func (s *WithdrawalService) Withdraw(wr model.WithdrawRequest) error {
-	crypto, err := s.cryptoStore.Crypto(wr.CryptoId)
+	crypto, err := s.cryptoStore.GetByUuid(wr.CryptoId)
 	if err != nil {
 		return err
 	}
 
-	walletFrom, err := s.walletStore.ByAddress(wr.FromAddress)
+	walletFrom, err := s.walletStore.GetByAddress(wr.FromAddress)
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func (s *WithdrawalService) Withdraw(wr model.WithdrawRequest) error {
 
 	s.walletCryptoStore.SetAmountByWalletId(walletFrom.Id, walletCryptoFrom.Amount-wr.Amount)
 
-	walletTo, err := s.walletStore.ByAddress(wr.ToAddress)
+	walletTo, err := s.walletStore.GetByAddress(wr.ToAddress)
 	if err != nil {
 		return err
 	}

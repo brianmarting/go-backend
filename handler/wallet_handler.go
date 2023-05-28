@@ -23,7 +23,7 @@ func (h *WalletHandler) Get() http.HandlerFunc {
 			return
 		}
 
-		wallet, err := h.Store.Wallet(id)
+		wallet, err := h.Store.GetByUuid(id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -36,12 +36,12 @@ func (h *WalletHandler) Get() http.HandlerFunc {
 
 func (h *WalletHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		wallet := &db.Wallet{
+		wallet := db.Wallet{
 			Uuid:    uuid.New(),
 			Address: uuid.NewString(),
 		}
 
-		if err := h.Store.CreateWallet(wallet); err != nil {
+		if err := h.Store.Create(wallet); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}

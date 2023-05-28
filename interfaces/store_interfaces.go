@@ -6,24 +6,18 @@ import (
 )
 
 type CryptoStore interface {
-	Crypto(id uuid.UUID) (db.Crypto, error)
-	CreateCrypto(c *db.Crypto) error
-	DeleteCrypto(id uuid.UUID) error
+	GetByUuid(id uuid.UUID) (db.Crypto, error)
+	Create(c db.Crypto) error
+	Delete(id uuid.UUID) error
 }
 
 type WalletStore interface {
-	Wallet(id uuid.UUID) (db.Wallet, error)
-	ByAddress(address string) (db.Wallet, error)
-	CreateWallet(w *db.Wallet) error
+	GetByUuid(id uuid.UUID) (db.Wallet, error)
+	GetByAddress(address string) (db.Wallet, error)
+	Create(w db.Wallet) error
 }
 
 type WalletCryptoStore interface {
 	FindByWalletIdAndCryptoId(walletId int, cryptoId int) (db.WalletCrypto, error)
 	SetAmountByWalletId(walletId int, amount int) error
-}
-
-type Store interface {
-	CryptoStore
-	WalletStore
-	WalletCryptoStore
 }

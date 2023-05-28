@@ -15,7 +15,7 @@ type WalletStore struct {
 	*sqlx.DB `di.inject:"sqlxDB"`
 }
 
-func (s *WalletStore) Wallet(id uuid.UUID) (Wallet, error) {
+func (s *WalletStore) GetByUuid(id uuid.UUID) (Wallet, error) {
 	var w Wallet
 
 	if err := s.Get(&w, "SELECT * FROM wallet WHERE uuid = $1", id); err != nil {
@@ -25,7 +25,7 @@ func (s *WalletStore) Wallet(id uuid.UUID) (Wallet, error) {
 	return w, nil
 }
 
-func (s *WalletStore) ByAddress(address string) (Wallet, error) {
+func (s *WalletStore) GetByAddress(address string) (Wallet, error) {
 	var w Wallet
 
 	if err := s.Get(&w, "SELECT * FROM wallet WHERE address = $1", address); err != nil {
@@ -35,8 +35,8 @@ func (s *WalletStore) ByAddress(address string) (Wallet, error) {
 	return w, nil
 }
 
-func (s *WalletStore) CreateWallet(w *Wallet) error {
-	if err := s.Get(&w, "INSERT INTO wallet (uuid, address) VALUES ($1, $2) RETURNING *"); err != nil {
+func (s *WalletStore) Create(w Wallet) error {
+	if _, err := s.Exec("INSERT INTO wallet (uuid, address) VALUES ($1, $2) RETURNING *", w.Uuid, w.Address); err != nil {
 		return err
 	}
 

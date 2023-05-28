@@ -16,7 +16,7 @@ type CryptoStore struct {
 	*sqlx.DB
 }
 
-func (s *CryptoStore) Crypto(id uuid.UUID) (Crypto, error) {
+func (s *CryptoStore) GetByUuid(id uuid.UUID) (Crypto, error) {
 	var c Crypto
 
 	if err := s.Get(&c, "SELECT * FROM crypto WHERE uuid = $1", id.String()); err != nil {
@@ -26,7 +26,7 @@ func (s *CryptoStore) Crypto(id uuid.UUID) (Crypto, error) {
 	return c, nil
 }
 
-func (s *CryptoStore) CreateCrypto(c *Crypto) error {
+func (s *CryptoStore) Create(c Crypto) error {
 	_, err := s.Exec("INSERT INTO crypto (uuid, name, description) VALUES ($1, $2, $3)", c.Uuid, c.Name, c.Description)
 
 	if err != nil {
@@ -36,7 +36,7 @@ func (s *CryptoStore) CreateCrypto(c *Crypto) error {
 	return nil
 }
 
-func (s *CryptoStore) DeleteCrypto(id uuid.UUID) error {
+func (s *CryptoStore) Delete(id uuid.UUID) error {
 	if _, err := s.Exec("DELETE FROM crypto WHERE uuid = $1", id); err != nil {
 		return err
 	}

@@ -23,7 +23,7 @@ func (c *CryptoHandler) Get() http.HandlerFunc {
 			return
 		}
 
-		crypto, err := c.Store.Crypto(id)
+		crypto, err := c.Store.GetByUuid(id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -36,12 +36,12 @@ func (c *CryptoHandler) Get() http.HandlerFunc {
 
 func (c *CryptoHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		crypto := &db.Crypto{
+		crypto := db.Crypto{
 			Uuid: uuid.New(),
 			Name: r.FormValue("name"),
 		}
 
-		if err := c.Store.CreateCrypto(crypto); err != nil {
+		if err := c.Store.Create(crypto); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -60,7 +60,7 @@ func (c *CryptoHandler) Delete() http.HandlerFunc {
 			return
 		}
 
-		if err := c.Store.DeleteCrypto(id); err != nil {
+		if err := c.Store.Delete(id); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
