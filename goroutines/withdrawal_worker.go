@@ -2,6 +2,7 @@ package goroutines
 
 import (
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"go-backend/model"
 	"go-backend/service"
 )
@@ -31,7 +32,7 @@ func (w *Worker) Start() {
 
 			select {
 			case withdrawRequest := <-w.Work:
-				fmt.Println("Worker will start withdrawing")
+				log.Info().Msg("Worker will start withdrawing")
 
 				if err := w.withdrawalService.Withdraw(withdrawRequest); err != nil {
 					fmt.Errorf("an error ocurred when withdrawing %g", err)

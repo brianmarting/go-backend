@@ -1,7 +1,7 @@
 package service
 
 import (
-	"fmt"
+	"github.com/rs/zerolog/log"
 	"go-backend/interfaces"
 	"go-backend/model"
 )
@@ -29,7 +29,7 @@ func (s *WithdrawalService) Withdraw(wr model.WithdrawRequest) error {
 	}
 
 	if walletCryptoFrom.Amount < wr.Amount {
-		fmt.Println("You do not have a sufficient amount of tokens")
+		log.Info().Msg("You do not have a sufficient amount of tokens")
 		return nil
 	}
 

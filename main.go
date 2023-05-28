@@ -2,12 +2,13 @@ package main
 
 import (
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"go-backend/db"
 	"go-backend/goroutines"
 	"go-backend/handler"
 	"go-backend/interfaces"
 	"go-backend/service"
-	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -20,9 +21,11 @@ type Handler struct {
 }
 
 func main() {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+
 	store, err := db.NewStore("postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	// Create handler and listen+serve for requests in a blocking manner
