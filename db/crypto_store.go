@@ -27,7 +27,9 @@ func (s *CryptoStore) Crypto(id uuid.UUID) (Crypto, error) {
 }
 
 func (s *CryptoStore) CreateCrypto(c *Crypto) error {
-	if err := s.Get(&c, "INSERT INTO crypto (uuid, name, description) VALUES ($1, $2, $3) RETURNING *"); err != nil {
+	_, err := s.Exec("INSERT INTO crypto (uuid, name, description) VALUES ($1, $2, $3)", c.Uuid, c.Name, c.Description)
+
+	if err != nil {
 		return err
 	}
 

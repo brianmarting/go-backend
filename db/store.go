@@ -10,11 +10,11 @@ func NewStore(driverName string) (*Store, error) {
 	db, err := sqlx.Open("postgres", driverName)
 
 	if err != nil {
-		return nil, fmt.Errorf("Error opening db", err)
+		return nil, fmt.Errorf("error opening db %g", err)
 	}
 
 	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf("Error pinging db", err)
+		return nil, fmt.Errorf("error pinging db %g", err)
 	}
 
 	return &Store{
