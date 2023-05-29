@@ -35,7 +35,7 @@ func (w *Worker) Start() {
 				log.Info().Msg("Worker will start withdrawing")
 
 				if err := w.withdrawalService.Withdraw(withdrawRequest); err != nil {
-					log.Err(err).Msg("an error ocurred when withdrawing")
+					log.Err(err).Msg("an error occurred when withdrawing")
 				}
 			case <-w.QuitChan:
 				return

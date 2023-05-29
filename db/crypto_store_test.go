@@ -81,7 +81,7 @@ func TestCryptoStore_Create(t *testing.T) {
 	s := &CryptoStore{
 		DB: sqlxDB,
 	}
-
+	
 	tests := []struct {
 		name    string
 		args    Crypto
