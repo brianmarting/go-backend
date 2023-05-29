@@ -5,6 +5,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -65,8 +66,8 @@ func TestCryptoStore_GetByUuid(t *testing.T) {
 				return
 			}
 
-			if err == nil && result != crypto {
-				t.Errorf("Bodies dont match")
+			if err == nil {
+				assert.Equal(t, result, crypto, "should be equal")
 			}
 		})
 	}
