@@ -2,7 +2,7 @@ package model
 
 import "github.com/google/uuid"
 
-type WithdrawRequest struct {
+type WithdrawalRequest struct {
 	CryptoId    uuid.UUID
 	FromAddress string
 	ToAddress   string

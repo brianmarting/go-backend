@@ -15,13 +15,13 @@ type WithdrawalHandler struct {
 
 func (h *WithdrawalHandler) Withdraw() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var withdrawRequest model.WithdrawRequest
+		var withdrawRequest model.WithdrawalRequest
 
 		if err := json.NewDecoder(r.Body).Decode(&withdrawRequest); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		goroutines.WithdrawalQueue <- withdrawRequest
+		goroutines.WithdrawalRequestChannel <- withdrawRequest
 	}
 }

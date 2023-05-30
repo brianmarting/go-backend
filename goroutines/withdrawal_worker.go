@@ -8,30 +8,30 @@ import (
 )
 
 type Worker struct {
-	Id                  int
-	Work                chan model.WithdrawRequest
-	WithdrawWorkerQueue chan chan model.WithdrawRequest
-	QuitChan            chan bool
-	withdrawalService   *service.WithdrawalService
+	Id                            int
+	WithdrawalRequestChannel      chan model.WithdrawalRequest
+	WithdrawalRequestChannelQueue chan chan model.WithdrawalRequest
+	QuitChan                      chan bool
+	withdrawalService             *service.WithdrawalService
 }
 
-func NewWorker(id int, workerQueue chan chan model.WithdrawRequest) Worker {
+func NewWorker(id int, WithdrawalRequestChannelQueue chan chan model.WithdrawalRequest) Worker {
 	return Worker{
-		Id:                  id,
-		Work:                make(chan model.WithdrawRequest),
-		WithdrawWorkerQueue: workerQueue,
-		QuitChan:            make(chan bool),
-		withdrawalService:   di.GetInstance("withdrawalService").(*service.WithdrawalService),
+		Id:                            id,
+		WithdrawalRequestChannel:      make(chan model.WithdrawalRequest),
+		WithdrawalRequestChannelQueue: WithdrawalRequestChannelQueue,
+		QuitChan:                      make(chan bool),
+		withdrawalService:             di.GetInstance("withdrawalService").(*service.WithdrawalService),
 	}
 }
 
 func (w *Worker) Start() {
 	go func() {
 		for {
-			w.WithdrawWorkerQueue <- w.Work
+			w.WithdrawalRequestChannelQueue <- w.WithdrawalRequestChannel
 
 			select {
-			case withdrawRequest := <-w.Work:
+			case withdrawRequest := <-w.WithdrawalRequestChannel:
 				log.Info().Msg("Worker will start withdrawing")
 
 				if err := w.withdrawalService.Withdraw(withdrawRequest); err != nil {

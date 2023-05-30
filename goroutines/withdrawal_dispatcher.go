@@ -5,32 +5,32 @@ import (
 	"go-backend/model"
 )
 
-var WithdrawalQueue = make(chan model.WithdrawRequest, 100)
+var WithdrawalRequestChannel = make(chan model.WithdrawalRequest, 100)
 
-var WithdrawalWorkerQueue chan chan model.WithdrawRequest
+var WithdrawalRequestChannelQueue chan chan model.WithdrawalRequest
 
 func StartDispatcher(amount int) {
-	WithdrawalWorkerQueue = make(chan chan model.WithdrawRequest, 5)
+	WithdrawalRequestChannelQueue = make(chan chan model.WithdrawalRequest, 5)
 
 	for i := 0; i < amount; i++ {
-		worker := NewWorker(i, WithdrawalWorkerQueue)
+		worker := NewWorker(i, WithdrawalRequestChannelQueue)
 		worker.Start()
 	}
 
 	go func() {
 		for {
 			select {
-			case withdrawal := <-WithdrawalQueue:
+			case withdrawal := <-WithdrawalRequestChannel:
 				log.Info().Msg("Incoming withdrawal req")
 				// Start the withdrawal work
 				go func() {
 					// get idle worker from queue
-					withdrawalWorker := <-WithdrawalWorkerQueue
+					withdrawalRequestChannel := <-WithdrawalRequestChannelQueue
 
 					log.Info().Msg("Got idle worker from queue")
 
 					// add withdrawal work to worker so it can process it
-					withdrawalWorker <- withdrawal
+					withdrawalRequestChannel <- withdrawal
 				}()
 			}
 		}

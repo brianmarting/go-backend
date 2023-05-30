@@ -12,7 +12,7 @@ type WithdrawalService struct {
 	walletCryptoStore *db.WalletCryptoStore `di.inject:"walletCryptoStore"`
 }
 
-func (s *WithdrawalService) Withdraw(wr model.WithdrawRequest) error {
+func (s *WithdrawalService) Withdraw(wr model.WithdrawalRequest) error {
 	crypto, err := s.cryptoStore.GetByUuid(wr.CryptoId)
 	if err != nil {
 		return err
