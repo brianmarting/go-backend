@@ -18,14 +18,12 @@ func NewStore() (*Store, error) {
 	}
 
 	return &Store{
-		CryptoStore:       &CryptoStore{DB: db},
-		WalletStore:       &WalletStore{DB: db},
-		WalletCryptoStore: &WalletCryptoStore{DB: db},
+		CryptoStore: &CryptoStore{DB: db},
+		WalletStore: &WalletStore{DB: db},
 	}, nil
 }
 
 type Store struct {
 	*CryptoStore
 	*WalletStore
-	*WalletCryptoStore
 }

@@ -6,9 +6,11 @@ import (
 )
 
 type Wallet struct {
-	Id      int       `db:"id"`
-	Uuid    uuid.UUID `db:"uuid"`
-	Address string    `db:"address"`
+	Id       int       `db:"id"`
+	Uuid     uuid.UUID `db:"uuid"`
+	CryptoId int       `db:"crypto_id"`
+	Address  string    `db:"address"`
+	Amount   int       `db:"amount"`
 }
 
 type WalletStore struct {

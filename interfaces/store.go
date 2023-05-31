@@ -3,12 +3,7 @@ package interfaces
 import (
 	"github.com/google/uuid"
 	"go-backend/db"
-	"go-backend/model"
 )
-
-type WithdrawalService interface {
-	Withdraw(wr model.WithdrawalRequest) error
-}
 
 type CryptoStore interface {
 	GetByUuid(id uuid.UUID) (db.Crypto, error)
@@ -22,7 +17,7 @@ type WalletStore interface {
 	Create(w db.Wallet) error
 }
 
-type WalletCryptoStore interface {
-	FindByWalletIdAndCryptoId(walletId int, cryptoId int) (db.WalletCrypto, error)
-	SetAmountByWalletId(walletId int, amount int) error
+type UserStore interface {
+	GetByUuid(id uuid.UUID) (db.User, error)
+	Create(u db.User) error
 }

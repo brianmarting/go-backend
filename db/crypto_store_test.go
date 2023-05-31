@@ -39,7 +39,7 @@ func TestCryptoStore_GetByUuid(t *testing.T) {
 				rows := sqlmock.
 					NewRows([]string{"id", "uuid", "name", "description"}).
 					AddRow(crypto.Id, crypto.Uuid, crypto.Name, crypto.Description)
-				mock.ExpectQuery("SELECT (.+) FROM crypto WHERE uuid = (.+)").WithArgs(crypto.Uuid, crypto.Name, crypto.Description).
+				mock.ExpectQuery("SELECT (.+) FROM crypto WHERE uuid = (.+)").
 					WithArgs(crypto.Uuid.String()).
 					WillReturnRows(rows)
 			},
@@ -62,7 +62,7 @@ func TestCryptoStore_GetByUuid(t *testing.T) {
 			result, err := s.GetByUuid(tt.args.Uuid)
 
 			if (err != nil) != tt.wantErr {
-				t.Errorf("CreateCrypto() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("GetByUuid() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
@@ -81,7 +81,7 @@ func TestCryptoStore_Create(t *testing.T) {
 	s := &CryptoStore{
 		DB: sqlxDB,
 	}
-	
+
 	tests := []struct {
 		name    string
 		args    Crypto

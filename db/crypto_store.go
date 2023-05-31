@@ -29,11 +29,7 @@ func (s *CryptoStore) GetByUuid(id uuid.UUID) (Crypto, error) {
 func (s *CryptoStore) Create(c Crypto) error {
 	_, err := s.Exec("INSERT INTO crypto (uuid, name, description) VALUES ($1, $2, $3)", c.Uuid, c.Name, c.Description)
 
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func (s *CryptoStore) Delete(id uuid.UUID) error {
