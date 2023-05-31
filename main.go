@@ -12,7 +12,7 @@ import (
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
-	store, err := db.NewStore("postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable")
+	store, err := db.NewStore()
 	if err != nil {
 		log.Fatal().Err(err)
 	}

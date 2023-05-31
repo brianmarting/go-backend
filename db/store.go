@@ -2,12 +2,12 @@ package db
 
 import (
 	"fmt"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"go-backend/db/psql"
 )
 
-func NewStore(driverName string) (*Store, error) {
-	db, err := sqlx.Open("postgres", driverName)
+func NewStore() (*Store, error) {
+	db, err := psql.NewDB()
 
 	if err != nil {
 		return nil, fmt.Errorf("error opening db %g", err)
