@@ -2,15 +2,14 @@ package handler
 
 import (
 	"encoding/json"
-	"go-backend/goroutines"
 	"go-backend/interfaces"
 	"go-backend/model"
+	"go-backend/worker"
 	"net/http"
 )
 
 type WithdrawalHandler struct {
-	WalletStore       interfaces.WalletStore
-	WalletCryptoStore interfaces.WalletCryptoStore
+	interfaces.WithdrawalService `di.inject:"withdrawalService"`
 }
 
 func (h *WithdrawalHandler) Withdraw() http.HandlerFunc {
@@ -22,6 +21,11 @@ func (h *WithdrawalHandler) Withdraw() http.HandlerFunc {
 			return
 		}
 
-		goroutines.WithdrawalRequestChannel <- withdrawRequest
+		job := &worker.WithdrawalWorkerJob{
+			WorkFn: func() error {
+				return h.WithdrawalService.Withdraw(withdrawRequest)
+			},
+		}
+		worker.WorkRequestChannel <- job
 	}
 }

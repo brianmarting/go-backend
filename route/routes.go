@@ -10,7 +10,7 @@ type Handler struct {
 
 	cryptoHandler     *handler.CryptoHandler     `di.inject:"cryptoHandler"`
 	walletHandler     *handler.WalletHandler     `di.inject:"walletHandler"`
-	withdrawalHandler *handler.WithdrawalHandler `di.inject:"withdrawalHandler""`
+	withdrawalHandler *handler.WithdrawalHandler `di.inject:"withdrawalHandler"`
 }
 
 func (h *Handler) CreateAllRoutes() *Handler {

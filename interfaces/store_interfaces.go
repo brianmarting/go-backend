@@ -3,7 +3,12 @@ package interfaces
 import (
 	"github.com/google/uuid"
 	"go-backend/db"
+	"go-backend/model"
 )
+
+type WithdrawalService interface {
+	Withdraw(wr model.WithdrawalRequest) error
+}
 
 type CryptoStore interface {
 	GetByUuid(id uuid.UUID) (db.Crypto, error)

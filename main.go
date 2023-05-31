@@ -7,10 +7,10 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"go-backend/db"
-	"go-backend/goroutines"
 	"go-backend/handler"
 	"go-backend/route"
 	"go-backend/service"
+	"go-backend/worker"
 	"net/http"
 	"reflect"
 )
@@ -18,19 +18,14 @@ import (
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
-	store, err := db.NewStore("postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable")
-	if err != nil {
-		log.Fatal().Err(err)
-	}
-
-	registerDependencies(store)
+	registerDependencies()
 
 	if err := di.InitializeContainer(); err != nil {
 		log.Fatal().Err(err)
 		return
 	}
 
-	goroutines.StartDispatcher(1)
+	worker.StartDispatcher(1)
 
 	// Create handler and listen+serve for requests in a blocking manner
 	h := di.GetInstance("handler").(*route.Handler)
@@ -38,7 +33,12 @@ func main() {
 	_ = http.ListenAndServe(":8888", h)
 }
 
-func registerDependencies(store *db.Store) {
+func registerDependencies() {
+	store, err := db.NewStore("postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable")
+	if err != nil {
+		log.Fatal().Err(err)
+	}
+
 	_, _ = di.RegisterBeanInstance("store", store)
 	_, _ = di.RegisterBeanInstance("walletStore", store.WalletStore)
 	_, _ = di.RegisterBeanInstance("cryptoStore", store.CryptoStore)
