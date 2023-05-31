@@ -10,7 +10,7 @@ import (
 )
 
 type WalletHandler struct {
-	Store interfaces.WalletStore `di.inject:"walletStore"`
+	Store interfaces.WalletStore
 }
 
 func (h *WalletHandler) Get() http.HandlerFunc {

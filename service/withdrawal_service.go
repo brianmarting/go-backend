@@ -2,28 +2,28 @@ package service
 
 import (
 	"github.com/rs/zerolog/log"
-	"go-backend/db"
+	"go-backend/interfaces"
 	"go-backend/model"
 )
 
 type WithdrawalService struct {
-	cryptoStore       *db.CryptoStore       `di.inject:"cryptoStore"`
-	walletStore       *db.WalletStore       `di.inject:"walletStore"`
-	walletCryptoStore *db.WalletCryptoStore `di.inject:"walletCryptoStore"`
+	interfaces.CryptoStore
+	interfaces.WalletStore
+	interfaces.WalletCryptoStore
 }
 
 func (s *WithdrawalService) Withdraw(wr model.WithdrawalRequest) error {
-	crypto, err := s.cryptoStore.GetByUuid(wr.CryptoId)
+	crypto, err := s.CryptoStore.GetByUuid(wr.CryptoId)
 	if err != nil {
 		return err
 	}
 
-	walletFrom, err := s.walletStore.GetByAddress(wr.FromAddress)
+	walletFrom, err := s.WalletStore.GetByAddress(wr.FromAddress)
 	if err != nil {
 		return err
 	}
 
-	walletCryptoFrom, err := s.walletCryptoStore.FindByWalletIdAndCryptoId(walletFrom.Id, crypto.Id)
+	walletCryptoFrom, err := s.WalletCryptoStore.FindByWalletIdAndCryptoId(walletFrom.Id, crypto.Id)
 	if err != nil {
 		return err
 	}
@@ -33,19 +33,19 @@ func (s *WithdrawalService) Withdraw(wr model.WithdrawalRequest) error {
 		return nil
 	}
 
-	s.walletCryptoStore.SetAmountByWalletId(walletFrom.Id, walletCryptoFrom.Amount-wr.Amount)
+	s.WalletCryptoStore.SetAmountByWalletId(walletFrom.Id, walletCryptoFrom.Amount-wr.Amount)
 
-	walletTo, err := s.walletStore.GetByAddress(wr.ToAddress)
+	walletTo, err := s.WalletStore.GetByAddress(wr.ToAddress)
 	if err != nil {
 		return err
 	}
 
-	walletCryptoTo, err := s.walletCryptoStore.FindByWalletIdAndCryptoId(walletTo.Id, crypto.Id)
+	walletCryptoTo, err := s.WalletCryptoStore.FindByWalletIdAndCryptoId(walletTo.Id, crypto.Id)
 	if err != nil {
 		return err
 	}
 
-	s.walletCryptoStore.SetAmountByWalletId(walletTo.Id, walletCryptoTo.Amount+wr.Amount)
+	s.WalletCryptoStore.SetAmountByWalletId(walletTo.Id, walletCryptoTo.Amount+wr.Amount)
 
 	return nil
 }

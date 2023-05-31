@@ -12,7 +12,7 @@ type Wallet struct {
 }
 
 type WalletStore struct {
-	*sqlx.DB `di.inject:"sqlxDB"`
+	*sqlx.DB
 }
 
 func (s *WalletStore) GetByUuid(id uuid.UUID) (Wallet, error) {

@@ -1,58 +1,28 @@
 package main
 
 import (
-	"context"
-	"github.com/go-chi/chi/v5"
-	"github.com/goioc/di"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"go-backend/db"
-	"go-backend/handler"
 	"go-backend/route"
-	"go-backend/service"
 	"go-backend/worker"
 	"net/http"
-	"reflect"
 )
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
-	registerDependencies()
-
-	if err := di.InitializeContainer(); err != nil {
-		log.Fatal().Err(err)
-		return
-	}
-
-	worker.StartDispatcher(1)
-
-	// Create handler and listen+serve for requests in a blocking manner
-	h := di.GetInstance("handler").(*route.Handler)
-	_ = h.CreateAllRoutes()
-	_ = http.ListenAndServe(":8888", h)
-}
-
-func registerDependencies() {
 	store, err := db.NewStore("postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable")
 	if err != nil {
 		log.Fatal().Err(err)
 	}
 
-	_, _ = di.RegisterBeanInstance("store", store)
-	_, _ = di.RegisterBeanInstance("walletStore", store.WalletStore)
-	_, _ = di.RegisterBeanInstance("cryptoStore", store.CryptoStore)
-	_, _ = di.RegisterBeanInstance("walletCryptoStore", store.WalletCryptoStore)
+	worker.StartDispatcher(1)
 
-	_, _ = di.RegisterBean("walletHandler", reflect.TypeOf((*handler.WalletHandler)(nil)))
-	_, _ = di.RegisterBean("cryptoHandler", reflect.TypeOf((*handler.CryptoHandler)(nil)))
-	_, _ = di.RegisterBean("withdrawalHandler", reflect.TypeOf((*handler.WithdrawalHandler)(nil)))
+	h := route.NewHandler(store)
+	_ = h.CreateAllRoutes()
+	_ = http.ListenAndServe(":8888", h)
 
-	_, _ = di.RegisterBean("withdrawalService", reflect.TypeOf((*service.WithdrawalService)(nil)))
-
-	_, _ = di.RegisterBeanFactory("handler", di.Singleton, func(ctx context.Context) (interface{}, error) {
-		return &route.Handler{
-			Mux: chi.NewMux(),
-		}, nil
-	})
+	// not being called?
+	worker.StopWorkers()
 }

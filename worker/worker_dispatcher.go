@@ -7,13 +7,15 @@ import (
 
 var WorkRequestChannel = make(chan interfaces.WorkerJob, 100)
 
+var QuitWorkRequestChannel = make(chan bool)
+
 var WorkRequestChannelQueue chan chan interfaces.WorkerJob
 
 func StartDispatcher(amount int) {
 	WorkRequestChannelQueue = make(chan chan interfaces.WorkerJob, 5)
 
 	for i := 0; i < amount; i++ {
-		worker := NewWorker(i, WorkRequestChannelQueue)
+		worker := NewWorker(i, WorkRequestChannelQueue, QuitWorkRequestChannel)
 		worker.Start()
 	}
 
@@ -35,4 +37,8 @@ func StartDispatcher(amount int) {
 			}
 		}
 	}()
+}
+
+func StopWorkers() {
+	QuitWorkRequestChannel <- true
 }

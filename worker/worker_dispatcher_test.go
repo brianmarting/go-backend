@@ -1,10 +1,9 @@
 package worker
 
 import (
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"go-backend/model"
 	"go-backend/service/mocks"
+	worker "go-backend/worker/mocks"
 	"testing"
 	"time"
 )
@@ -12,17 +11,12 @@ import (
 func TestStartDispatcher(t *testing.T) {
 	withdrawalServiceMock := new(mocks.WithdrawalServiceMock)
 
-	t.Run("Should run withdraw request and withdraw", func(t *testing.T) {
-		withdrawRequest := model.WithdrawalRequest{
-			CryptoId:    uuid.UUID{},
-			FromAddress: "X-FROM",
-			ToAddress:   "X-TO",
-			Amount:      10,
-		}
-		withdrawalServiceMock.On("Withdraw", withdrawRequest).Return(nil)
+	t.Run("Should run work", func(t *testing.T) {
+		withdrawalWorkerJobMock := new(worker.WithdrawalWorkerJobMock)
 
+		withdrawalWorkerJobMock.On("Work").Return(nil)
 		StartDispatcher(1)
-		WorkRequestChannel <- withdrawRequest
+		WorkRequestChannel <- withdrawalWorkerJobMock
 
 		assert.EventuallyWithT(t, func(c *assert.CollectT) {
 			withdrawalServiceMock.AssertExpectations(t)

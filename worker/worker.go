@@ -12,12 +12,12 @@ type Worker struct {
 	QuitChan                chan bool
 }
 
-func NewWorker(id int, workRequestChannelQueue chan chan interfaces.WorkerJob) Worker {
+func NewWorker(id int, workRequestChannelQueue chan chan interfaces.WorkerJob, quit chan bool) Worker {
 	return Worker{
 		Id:                      id,
 		WorkRequestChannel:      make(chan interfaces.WorkerJob),
 		WorkRequestChannelQueue: workRequestChannelQueue,
-		QuitChan:                make(chan bool),
+		QuitChan:                quit,
 	}
 }
 
@@ -34,15 +34,9 @@ func (w *Worker) Start() {
 					log.Err(err).Msg("an error occurred while working")
 				}
 			case <-w.QuitChan:
+				log.Info().Msg("stopping worker")
 				return
 			}
 		}
-	}()
-}
-
-// Stop the work non-blocking
-func (w *Worker) Stop() {
-	go func() {
-		w.QuitChan <- true
 	}()
 }

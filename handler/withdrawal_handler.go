@@ -9,7 +9,7 @@ import (
 )
 
 type WithdrawalHandler struct {
-	interfaces.WithdrawalService `di.inject:"withdrawalService"`
+	interfaces.WithdrawalService
 }
 
 func (h *WithdrawalHandler) Withdraw() http.HandlerFunc {
