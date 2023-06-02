@@ -1,15 +1,18 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"go-backend/interfaces"
+	"go-backend/interfaces/queue"
 	"go-backend/model"
-	"go-backend/worker"
 	"net/http"
+	"time"
 )
 
 type WithdrawalHandler struct {
 	interfaces.WithdrawalService
+	queue.Publisher
 }
 
 func (h *WithdrawalHandler) Withdraw() http.HandlerFunc {
@@ -21,11 +24,15 @@ func (h *WithdrawalHandler) Withdraw() http.HandlerFunc {
 			return
 		}
 
-		job := &worker.WithdrawalWorkerJob{
-			WorkFn: func() error {
-				return h.WithdrawalService.Withdraw(withdrawRequest)
-			},
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+		defer cancel()
+
+		err := h.Publisher.Publish(ctx, "withdraw_request", nil) // TODO WIP
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
-		worker.WorkRequestChannel <- job
+
+		w.WriteHeader(200)
 	}
 }

@@ -20,6 +20,12 @@ func StartDispatcher(amount int) {
 	}
 
 	go func() {
+		defer func() {
+			close(WorkRequestChannel)
+			close(QuitWorkRequestChannel)
+			close(WorkRequestChannelQueue)
+		}()
+
 		for {
 			select {
 			case workerJob := <-WorkRequestChannel:

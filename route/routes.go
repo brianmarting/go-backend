@@ -22,6 +22,7 @@ func NewHandler(store *db.Store) *Handler {
 		WalletHandler: &handler.WalletHandler{Store: store.WalletStore},
 		WithdrawalHandler: &handler.WithdrawalHandler{
 			WithdrawalService: service.NewWithdrawalService(store),
+			Publisher:         NewPublisher("amqp://guest:guest@localhost:5672/"),
 		},
 	}
 }

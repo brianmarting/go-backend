@@ -37,8 +37,13 @@ INSERT INTO crypto VALUES (2, '666cb884-fc16-42dc-b562-15720d7eb29f', 'eth', 'Et
 
 INSERT INTO wallet VALUES (1, '781273f8-ea1c-4286-93c2-d52dc120a9d7', 1, 'bc1d42UNb54eBiGm0qEM0h6r2h8n532to9jtp186ns', 10);
 INSERT INTO wallet VALUES (2, 'f494b4a6-ce50-49b8-95b9-2bc722f11421', 2, 'ff2d42UNb54eBiGm0qEM0h6r2h8n532to9jtp186ns', 25);
+INSERT INTO wallet VALUES (3, '991273f8-ea1c-4286-93c2-d52dc120a9d7', 1, 'op3l42UNb54eBiGm0qEM0h6r2h8n532to9jtp186ns', 13);
+INSERT INTO wallet VALUES (4, '3494b4a6-ce50-49b8-95b9-2bc722f11421', 2, 'pp2d42UNb54eBiGm0qEM0h6r2h8n532to9jtp186ns', 31);
 
 INSERT INTO exchange_user VALUES (1, 'a8cbb0b4-e44d-4d8d-a424-75f4b3657d23', 'John');
+INSERT INTO exchange_user VALUES (2, 'f9wbb0b4-e44d-4d8d-a424-75f4b3657d23', 'Jack');
 
 INSERT INTO exchange_user_wallets VALUES (1, 1, 1);
-INSERT INTO exchange_user_wallets VALUES (1, 2, 1);
+INSERT INTO exchange_user_wallets VALUES (2, 2, 1);
+INSERT INTO exchange_user_wallets VALUES (3, 3, 2);
+INSERT INTO exchange_user_wallets VALUES (4, 4, 2);
