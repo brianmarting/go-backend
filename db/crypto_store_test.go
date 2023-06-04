@@ -6,10 +6,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
+	"go-backend/model"
 	"testing"
 )
 
-var crypto = Crypto{
+var crypto = model.Crypto{
 	Id:          1,
 	Uuid:        uuid.New(),
 	Name:        "btc",
@@ -27,7 +28,7 @@ func TestCryptoStore_GetByUuid(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		args    Crypto
+		args    model.Crypto
 		mock    func()
 		wantErr bool
 	}{
@@ -84,7 +85,7 @@ func TestCryptoStore_Create(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		args    Crypto
+		args    model.Crypto
 		mock    func()
 		wantErr bool
 	}{
@@ -127,7 +128,7 @@ func TestCryptoStore_DeleteCrypto(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		args    Crypto
+		args    model.Crypto
 		mock    func()
 		wantErr bool
 	}{

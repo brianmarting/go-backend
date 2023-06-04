@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"go-backend/db"
-	"go-backend/interfaces"
+	"go-backend/interfaces/db"
+	"go-backend/model"
 	"net/http"
 )
 
 type CryptoHandler struct {
-	Store interfaces.CryptoStore
+	Store db.CryptoStore
 }
 
 func (c *CryptoHandler) Get() http.HandlerFunc {
@@ -36,7 +36,7 @@ func (c *CryptoHandler) Get() http.HandlerFunc {
 
 func (c *CryptoHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		crypto := db.Crypto{
+		crypto := model.Crypto{
 			Uuid: uuid.New(),
 			Name: r.FormValue("name"),
 		}

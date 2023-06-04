@@ -8,15 +8,15 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"go-backend/db"
 	"go-backend/db/mocks"
+	"go-backend/model"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
 )
 
-var crypto = db.Crypto{
+var crypto = model.Crypto{
 	Name: "btc",
 }
 
@@ -62,7 +62,7 @@ func TestCryptoHandler_Get(t *testing.T) {
 				return r
 			},
 			mockFn: func() *mock.Call {
-				return cryptoStoreMock.On("GetByUuid", uuid).Return(db.Crypto{}, errors.New("db err"))
+				return cryptoStoreMock.On("GetByUuid", uuid).Return(model.Crypto{}, errors.New("db err"))
 			},
 			expectError: true,
 		},
@@ -105,7 +105,7 @@ func TestCryptoHandler_Get(t *testing.T) {
 			}
 
 			if tt.expectResult {
-				var result db.Crypto
+				var result model.Crypto
 				json.NewDecoder(tt.rec.Body).Decode(&result)
 
 				assert.Equal(t, crypto, result)
@@ -124,7 +124,7 @@ func TestCryptoHandler_Create(t *testing.T) {
 	tests := []struct {
 		name         string
 		rec          *httptest.ResponseRecorder
-		arg          db.Crypto
+		arg          model.Crypto
 		reqFn        func() *http.Request
 		mockFn       func() *mock.Call
 		expectResult bool
@@ -150,7 +150,7 @@ func TestCryptoHandler_Create(t *testing.T) {
 		{
 			name: "Should get error",
 			rec:  httptest.NewRecorder(),
-			arg:  db.Crypto{},
+			arg:  model.Crypto{},
 			reqFn: func() *http.Request {
 				r := httptest.NewRequest("POST", "/", nil)
 				r.Form = url.Values{
@@ -197,7 +197,7 @@ func TestCryptoHandler_Delete(t *testing.T) {
 	tests := []struct {
 		name         string
 		rec          *httptest.ResponseRecorder
-		arg          db.Crypto
+		arg          model.Crypto
 		reqFn        func() *http.Request
 		mockFn       func() *mock.Call
 		expectResult bool
@@ -225,7 +225,7 @@ func TestCryptoHandler_Delete(t *testing.T) {
 		{
 			name: "Should get error when parsing uuid",
 			rec:  httptest.NewRecorder(),
-			arg:  db.Crypto{},
+			arg:  model.Crypto{},
 			reqFn: func() *http.Request {
 				r := httptest.NewRequest("GET", "/", nil)
 
@@ -240,7 +240,7 @@ func TestCryptoHandler_Delete(t *testing.T) {
 		{
 			name: "Should get error when deleting",
 			rec:  httptest.NewRecorder(),
-			arg:  db.Crypto{},
+			arg:  model.Crypto{},
 			reqFn: func() *http.Request {
 				r := httptest.NewRequest("GET", "/", nil)
 

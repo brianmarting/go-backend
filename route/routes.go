@@ -3,8 +3,8 @@ package route
 import (
 	"github.com/go-chi/chi/v5"
 	"go-backend/db"
+	"go-backend/facade"
 	"go-backend/handler"
-	"go-backend/service"
 )
 
 type Handler struct {
@@ -15,14 +15,16 @@ type Handler struct {
 	*handler.WithdrawalHandler
 }
 
-func NewHandler(store *db.Store) *Handler {
+func NewHandler() *Handler {
+	store := db.GetStore()
 	return &Handler{
 		Mux:           chi.NewMux(),
 		CryptoHandler: &handler.CryptoHandler{Store: store.CryptoStore},
 		WalletHandler: &handler.WalletHandler{Store: store.WalletStore},
 		WithdrawalHandler: &handler.WithdrawalHandler{
-			WithdrawalService: service.NewWithdrawalService(store),
-			Publisher:         NewPublisher("amqp://guest:guest@localhost:5672/"),
+			Publisher:   facade.GetPublisher(),
+			WalletStore: store.WalletStore,
+			CryptoStore: store.CryptoStore,
 		},
 	}
 }

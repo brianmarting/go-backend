@@ -1,4 +1,4 @@
-package interfaces
+package worker
 
 type WorkerJob interface {
 	Work() error

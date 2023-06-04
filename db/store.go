@@ -3,10 +3,32 @@ package db
 import (
 	"fmt"
 	_ "github.com/lib/pq"
+	"github.com/rs/zerolog/log"
 	"go-backend/db/psql"
+	"sync"
 )
 
-func NewStore() (*Store, error) {
+var once sync.Once
+
+var (
+	store    *Store
+	storeErr error
+)
+
+func GetStore() *Store {
+	if store == nil {
+		once.Do(func() {
+			store, storeErr = newStore()
+			if storeErr != nil {
+				log.Fatal().Err(storeErr)
+			}
+		})
+	}
+
+	return store
+}
+
+func newStore() (*Store, error) {
 	db, err := psql.NewDB()
 
 	if err != nil {

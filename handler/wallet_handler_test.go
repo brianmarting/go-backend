@@ -8,14 +8,14 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"go-backend/db"
 	"go-backend/db/mocks"
+	"go-backend/model"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
-var wallet = db.Wallet{}
+var wallet = model.Wallet{}
 
 func TestWalletHandler_Get(t *testing.T) {
 	walletStoreMock := new(mocks.WalletStoreMock)
@@ -59,7 +59,7 @@ func TestWalletHandler_Get(t *testing.T) {
 				return r
 			},
 			mockFn: func() *mock.Call {
-				return walletStoreMock.On("GetByUuid", uuid).Return(db.Wallet{}, errors.New("db err"))
+				return walletStoreMock.On("GetByUuid", uuid).Return(model.Wallet{}, errors.New("db err"))
 			},
 			expectError: true,
 		},
@@ -102,7 +102,7 @@ func TestWalletHandler_Get(t *testing.T) {
 			}
 
 			if tt.expectResult {
-				var result db.Wallet
+				var result model.Wallet
 				json.NewDecoder(tt.rec.Body).Decode(&result)
 
 				assert.Equal(t, wallet, result)

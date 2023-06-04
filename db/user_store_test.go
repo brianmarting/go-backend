@@ -6,10 +6,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
+	"go-backend/model"
 	"testing"
 )
 
-var user = User{
+var user = model.User{
 	Id:   1,
 	Uuid: uuid.New(),
 	Name: "John",
@@ -26,7 +27,7 @@ func TestUserStore_GetByUuid(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		args    User
+		args    model.User
 		mock    func()
 		wantErr bool
 	}{
@@ -83,7 +84,7 @@ func TestUserStore_Create(t *testing.T) {
 
 	tests := []struct {
 		name    string
-		args    User
+		args    model.User
 		mock    func()
 		wantErr bool
 	}{

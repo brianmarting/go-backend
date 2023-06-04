@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"go-backend/db"
-	"go-backend/interfaces"
+	"go-backend/interfaces/db"
+	"go-backend/model"
 	"net/http"
 )
 
 type WalletHandler struct {
-	Store interfaces.WalletStore
+	Store db.WalletStore
 }
 
 func (h *WalletHandler) Get() http.HandlerFunc {
@@ -36,7 +36,7 @@ func (h *WalletHandler) Get() http.HandlerFunc {
 
 func (h *WalletHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		wallet := db.Wallet{
+		wallet := model.Wallet{
 			Uuid:    uuid.New(),
 			Address: uuid.NewString(),
 		}

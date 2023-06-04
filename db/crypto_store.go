@@ -3,30 +3,24 @@ package db
 import (
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
+	"go-backend/model"
 )
-
-type Crypto struct {
-	Id          int       `db:"id"`
-	Uuid        uuid.UUID `db:"uuid"`
-	Name        string    `db:"name"`
-	Description string    `db:"description"`
-}
 
 type CryptoStore struct {
 	*sqlx.DB
 }
 
-func (s *CryptoStore) GetByUuid(id uuid.UUID) (Crypto, error) {
-	var c Crypto
+func (s *CryptoStore) GetByUuid(id uuid.UUID) (model.Crypto, error) {
+	var c model.Crypto
 
 	if err := s.Get(&c, "SELECT * FROM crypto WHERE uuid = $1", id.String()); err != nil {
-		return Crypto{}, err
+		return model.Crypto{}, err
 	}
 
 	return c, nil
 }
 
-func (s *CryptoStore) Create(c Crypto) error {
+func (s *CryptoStore) Create(c model.Crypto) error {
 	_, err := s.Exec("INSERT INTO crypto (uuid, name, description) VALUES ($1, $2, $3)", c.Uuid, c.Name, c.Description)
 
 	return err

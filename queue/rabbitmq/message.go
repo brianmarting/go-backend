@@ -9,3 +9,7 @@ type Message struct {
 func (m Message) GetBytes() []byte {
 	return m.Delivery.Body
 }
+
+func (m Message) Ack() {
+	m.Acknowledger.Ack(m.DeliveryTag, false)
+}

@@ -3,19 +3,19 @@ package mocks
 import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
-	"go-backend/db"
+	"go-backend/model"
 )
 
 type CryptoStoreMock struct {
 	mock.Mock
 }
 
-func (m *CryptoStoreMock) GetByUuid(id uuid.UUID) (db.Crypto, error) {
+func (m *CryptoStoreMock) GetByUuid(id uuid.UUID) (model.Crypto, error) {
 	args := m.Called(id)
-	return args.Get(0).(db.Crypto), args.Error(1)
+	return args.Get(0).(model.Crypto), args.Error(1)
 }
 
-func (m *CryptoStoreMock) Create(c db.Crypto) error {
+func (m *CryptoStoreMock) Create(c model.Crypto) error {
 	args := m.Called(c)
 	return args.Error(0)
 }
