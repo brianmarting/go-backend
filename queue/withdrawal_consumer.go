@@ -2,13 +2,14 @@ package queue
 
 import (
 	"encoding/json"
-	"github.com/rs/zerolog/log"
 	"go-backend/facade"
 	"go-backend/interfaces/queue"
 	"go-backend/interfaces/service"
 	"go-backend/model"
 	serviceImpl "go-backend/service"
 	"sync"
+
+	"github.com/rs/zerolog/log"
 )
 
 var once sync.Once

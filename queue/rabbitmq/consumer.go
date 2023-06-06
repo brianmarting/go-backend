@@ -1,8 +1,9 @@
 package rabbitmq
 
 import (
-	amqp "github.com/rabbitmq/amqp091-go"
 	"go-backend/interfaces/queue"
+
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 type Consumer struct {

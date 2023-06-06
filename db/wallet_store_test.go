@@ -2,11 +2,12 @@ package db
 
 import (
 	"errors"
+	"go-backend/model"
+	"testing"
+
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
-	"go-backend/model"
-	"testing"
 )
 
 var wallet = model.Wallet{

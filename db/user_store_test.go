@@ -2,12 +2,13 @@ package db
 
 import (
 	"errors"
+	"go-backend/model"
+	"testing"
+
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
-	"go-backend/model"
-	"testing"
 )
 
 var user = model.User{

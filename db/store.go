@@ -2,10 +2,11 @@ package db
 
 import (
 	"fmt"
-	_ "github.com/lib/pq"
-	"github.com/rs/zerolog/log"
 	"go-backend/db/psql"
 	"sync"
+
+	_ "github.com/lib/pq"
+	"github.com/rs/zerolog/log"
 )
 
 var once sync.Once

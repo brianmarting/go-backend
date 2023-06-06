@@ -1,9 +1,10 @@
 package db
 
 import (
+	"go-backend/model"
+
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
-	"go-backend/model"
 )
 
 type CryptoStore struct {

@@ -1,9 +1,10 @@
 package mocks
 
 import (
+	"go-backend/model"
+
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
-	"go-backend/model"
 )
 
 type WalletStoreMock struct {

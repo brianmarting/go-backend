@@ -1,8 +1,9 @@
 package db
 
 import (
-	"github.com/google/uuid"
 	"go-backend/model"
+
+	"github.com/google/uuid"
 )
 
 type CryptoStore interface {

@@ -1,10 +1,11 @@
 package facade
 
 import (
-	"github.com/rs/zerolog/log"
 	"go-backend/interfaces/queue"
 	"go-backend/queue/rabbitmq"
 	"sync"
+
+	"github.com/rs/zerolog/log"
 )
 
 var once sync.Once

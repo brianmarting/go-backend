@@ -2,11 +2,12 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 	"go-backend/interfaces/db"
 	"go-backend/model"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 )
 
 type WalletHandler struct {
