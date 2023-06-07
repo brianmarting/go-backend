@@ -246,7 +246,7 @@ func TestCryptoHandler_Delete(t *testing.T) {
 				r := httptest.NewRequest("GET", "/", nil)
 
 				rctx := chi.NewRouteContext()
-				rctx.URLParams.Add("id", "malformed")
+				rctx.URLParams.Add("id", uuid.String())
 
 				r = r.WithContext(context.WithValue(r.Context(), chi.RouteCtxKey, rctx))
 				return r
