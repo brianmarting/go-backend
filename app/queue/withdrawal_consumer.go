@@ -44,7 +44,9 @@ func (c withdrawalConsumer) StartConsuming() {
 				log.Info().Err(err).Msg("failed to process withdraw request")
 			}
 
-			message.Ack()
+			if err = message.Ack(); err != nil {
+				log.Info().Err(err).Msg("failed to ack")
+			}
 		}
 	}()
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"go-backend/api"
 	"go-backend/app/queue"
-	queue2 "go-backend/facade/queue"
+	facadeQueue "go-backend/facade/queue"
 	"go-backend/persistence/db"
 	"go-backend/service"
 	"net/http"
@@ -16,13 +16,17 @@ func main() {
 
 	store := db.GetStore()
 
-	consumer := queue.NewWithdrawalConsumer(
-		queue2.NewConsumer(),
-		service.NewWithdrawalService(service.NewWalletService(store.WalletStore)),
-	)
+	consumer := createWithdrawalConsumer(store)
 	consumer.StartConsuming()
 
 	h := api.NewHandler(store)
 	_ = h.CreateAllRoutes()
 	_ = http.ListenAndServe(":8888", h)
+}
+
+func createWithdrawalConsumer(store *db.Store) queue.WithdrawalConsumer {
+	return queue.NewWithdrawalConsumer(
+		facadeQueue.NewConsumer(),
+		service.NewWithdrawalService(service.NewWalletService(store.WalletStore)),
+	)
 }

@@ -10,6 +10,17 @@ type Consumer struct {
 	*Connection
 }
 
+func NewConsumer(url string) (*Consumer, error) {
+	conn, err := GetConnection(url)
+	if err != nil {
+		return &Consumer{}, nil
+	}
+
+	return &Consumer{
+		Connection: &conn,
+	}, nil
+}
+
 func (c Consumer) StartConsuming(queueName, key string) (<-chan queue.Message, error) {
 	_, err := c.channel.QueueDeclare(
 		queueName,
@@ -64,15 +75,4 @@ func convertToMessage(delivery amqp.Delivery) Message {
 	return Message{
 		Delivery: &delivery,
 	}
-}
-
-func NewConsumer(url string) (*Consumer, error) {
-	conn, err := GetConnection(url)
-	if err != nil {
-		return &Consumer{}, nil
-	}
-
-	return &Consumer{
-		Connection: &conn,
-	}, nil
 }

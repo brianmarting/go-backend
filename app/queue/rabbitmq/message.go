@@ -10,6 +10,6 @@ func (m Message) GetBytes() []byte {
 	return m.Delivery.Body
 }
 
-func (m Message) Ack() {
-	m.Acknowledger.Ack(m.DeliveryTag, false)
+func (m Message) Ack() error {
+	return m.Acknowledger.Ack(m.DeliveryTag, false)
 }
