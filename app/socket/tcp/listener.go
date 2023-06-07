@@ -3,10 +3,11 @@ package tcp
 import (
 	"bufio"
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"go-backend/app/socket"
 	"net"
 	"os"
+
+	"github.com/rs/zerolog/log"
 )
 
 type Listener struct {
