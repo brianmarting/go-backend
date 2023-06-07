@@ -27,7 +27,8 @@ func NewWithdrawalConsumer(consumer Consumer, withdrawalService service.Withdraw
 func (c withdrawalConsumer) StartConsuming() {
 	messages, err := c.consumer.StartConsuming("withdrawRequests", "withdraw.request")
 	if err != nil {
-		log.Fatal().Msg("failed to start consuming")
+		log.Fatal().Err(err).Msg("failed to start consuming")
+		return
 	}
 
 	go func() {
@@ -36,12 +37,13 @@ func (c withdrawalConsumer) StartConsuming() {
 
 			if err := json.Unmarshal(message.GetBytes(), wr); err != nil {
 				log.Info().Err(err).Msg("failed to parse data")
-				return
+				continue
 			}
 
 			err := c.withdrawalService.Withdraw(wr)
 			if err != nil {
 				log.Info().Err(err).Msg("failed to process withdraw request")
+				continue
 			}
 
 			if err = message.Ack(); err != nil {
