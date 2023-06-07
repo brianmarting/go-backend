@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
-	"go-backend/interfaces/db"
-	"go-backend/model"
+	"go-backend/persistence/db/model"
+	"go-backend/service"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -16,12 +16,12 @@ type WalletHandler interface {
 }
 
 type walletHandler struct {
-	store db.WalletStore
+	service service.WalletService
 }
 
-func NewWalletHandler(store db.WalletStore) WalletHandler {
+func NewWalletHandler(service service.WalletService) WalletHandler {
 	return walletHandler{
-		store: store,
+		service: service,
 	}
 }
 
@@ -35,7 +35,7 @@ func (h walletHandler) Get() http.HandlerFunc {
 			return
 		}
 
-		wallet, err := h.store.GetByUuid(id)
+		wallet, err := h.service.GetByUuid(id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -53,7 +53,7 @@ func (h walletHandler) Create() http.HandlerFunc {
 			Address: uuid.NewString(),
 		}
 
-		if err := h.store.Create(wallet); err != nil {
+		if err := h.service.Create(wallet); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}

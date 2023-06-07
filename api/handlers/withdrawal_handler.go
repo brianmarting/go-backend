@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"go-backend/interfaces/db"
-	"go-backend/interfaces/queue"
-	"go-backend/model"
+	"go-backend/api/model"
+	"go-backend/app/queue"
+	"go-backend/service"
 	"net/http"
 	"time"
 )
@@ -16,16 +16,20 @@ type WithdrawalHandler interface {
 }
 
 type withdrawalHandler struct {
-	publisher   queue.Publisher
-	cryptoStore db.CryptoStore
-	walletStore db.WalletStore
+	publisher     queue.Publisher
+	cryptoService service.CryptoService
+	walletService service.WalletService
 }
 
-func NewWithdrawalHandler(publisher queue.Publisher, cryptoStore db.CryptoStore, walletStore db.WalletStore) WithdrawalHandler {
+func NewWithdrawalHandler(
+	publisher queue.Publisher,
+	cryptoService service.CryptoService,
+	walletService service.WalletService,
+) WithdrawalHandler {
 	return withdrawalHandler{
-		publisher:   publisher,
-		cryptoStore: cryptoStore,
-		walletStore: walletStore,
+		publisher:     publisher,
+		cryptoService: cryptoService,
+		walletService: walletService,
 	}
 }
 
@@ -63,12 +67,12 @@ func (h withdrawalHandler) Withdraw() http.HandlerFunc {
 }
 
 func validateWithdrawRequest(h withdrawalHandler, wr model.WithdrawalRequest) error {
-	crypto, err := h.cryptoStore.GetByUuid(wr.CryptoId)
+	crypto, err := h.cryptoService.GetByUuid(wr.CryptoId)
 	if err != nil {
 		return err
 	}
 
-	walletFrom, err := h.walletStore.GetByAddress(wr.FromAddress)
+	walletFrom, err := h.walletService.GetByAddress(wr.FromAddress)
 	if err != nil {
 		return err
 	}
@@ -79,7 +83,7 @@ func validateWithdrawRequest(h withdrawalHandler, wr model.WithdrawalRequest) er
 		return errors.New("the wallet from does not have sufficient funds")
 	}
 
-	walletTo, err := h.walletStore.GetByAddress(wr.ToAddress)
+	walletTo, err := h.walletService.GetByAddress(wr.ToAddress)
 	if err != nil {
 		return err
 	}

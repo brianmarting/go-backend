@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"go-backend/db/psql"
+	"go-backend/persistence/db/psql"
 	"sync"
 
 	_ "github.com/lib/pq"

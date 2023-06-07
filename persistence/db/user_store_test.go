@@ -2,7 +2,7 @@ package db
 
 import (
 	"errors"
-	"go-backend/model"
+	"go-backend/persistence/db/model"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"

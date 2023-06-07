@@ -1,50 +1,39 @@
 package service
 
 import (
-	dbImpl "go-backend/db"
-	"go-backend/interfaces/db"
-	"go-backend/interfaces/service"
-	"go-backend/model"
-	"sync"
+	"go-backend/api/model"
 )
 
-var once sync.Once
-
-var withdrawalService *WithdrawalService
-
-type WithdrawalService struct {
-	db.WalletStore
+type WithdrawalService interface {
+	Withdraw(wr *model.WithdrawalRequest) error
 }
 
-func GetWithdrawalService() service.WithdrawalService {
-	if withdrawalService == nil {
-		once.Do(func() {
-			store := dbImpl.GetStore()
-			withdrawalService = &WithdrawalService{
-				WalletStore: store.WalletStore,
-			}
-		})
+type withdrawalService struct {
+	walletService WalletService
+}
+
+func NewWithdrawalService(walletService WalletService) WithdrawalService {
+	return withdrawalService{
+		walletService: walletService,
 	}
-
-	return withdrawalService
 }
 
-func (s *WithdrawalService) Withdraw(wr *model.WithdrawalRequest) error {
-	walletFrom, err := s.WalletStore.GetByAddress(wr.FromAddress)
+func (s withdrawalService) Withdraw(wr *model.WithdrawalRequest) error {
+	walletFrom, err := s.walletService.GetByAddress(wr.FromAddress)
 	if err != nil {
 		return err
 	}
 
-	walletTo, err := s.WalletStore.GetByAddress(wr.ToAddress)
+	walletTo, err := s.walletService.GetByAddress(wr.ToAddress)
 	if err != nil {
 		return err
 	}
 
-	if err = s.WalletStore.UpdateAmountById(walletFrom.Id, walletFrom.Amount-wr.Amount); err != nil {
+	if err = s.walletService.UpdateAmountById(walletFrom.Id, walletFrom.Amount-wr.Amount); err != nil {
 		return err
 	}
 
-	if err = s.WalletStore.UpdateAmountById(walletTo.Id, walletTo.Amount+wr.Amount); err != nil {
+	if err = s.walletService.UpdateAmountById(walletTo.Id, walletTo.Amount+wr.Amount); err != nil {
 		return err
 	}
 

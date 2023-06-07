@@ -1,9 +1,10 @@
 package api
 
 import (
-	handlers2 "go-backend/api/handlers"
-	"go-backend/db"
-	"go-backend/facade"
+	"go-backend/api/handlers"
+	"go-backend/facade/queue"
+	"go-backend/persistence/db"
+	"go-backend/service"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -18,20 +19,22 @@ type Handler interface {
 type handler struct {
 	*chi.Mux
 
-	cryptoHandler     handlers2.CryptoHandler
-	walletHandler     handlers2.WalletHandler
-	withdrawalHandler handlers2.WithdrawalHandler
+	cryptoHandler     handlers.CryptoHandler
+	walletHandler     handlers.WalletHandler
+	withdrawalHandler handlers.WithdrawalHandler
 }
 
-func NewHandler() Handler {
-	store := db.GetStore()
-
+func NewHandler(store *db.Store) Handler {
 	return handler{
-		Mux:           chi.NewMux(),
-		cryptoHandler: handlers2.NewCryptoHandler(store.CryptoStore),
-		walletHandler: handlers2.NewWalletHandler(store.WalletStore),
-		withdrawalHandler: handlers2.NewWithdrawalHandler(
-			facade.GetPublisher(),
+		Mux: chi.NewMux(),
+		cryptoHandler: handlers.NewCryptoHandler(
+			service.NewCryptoService(store.CryptoStore),
+		),
+		walletHandler: handlers.NewWalletHandler(
+			service.NewWalletService(store.WalletStore),
+		),
+		withdrawalHandler: handlers.NewWithdrawalHandler(
+			queue.NewPublisher(),
 			store.CryptoStore,
 			store.WalletStore,
 		),

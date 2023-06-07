@@ -1,9 +1,8 @@
 package mocks
 
 import (
-	"go-backend/model"
-
 	"github.com/stretchr/testify/mock"
+	"go-backend/api/model"
 )
 
 type WithdrawalServiceMock struct {

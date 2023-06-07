@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"go-backend/model"
+	"go-backend/persistence/db/model"
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"

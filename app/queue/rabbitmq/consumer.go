@@ -1,9 +1,8 @@
 package rabbitmq
 
 import (
-	"go-backend/interfaces/queue"
-
 	amqp "github.com/rabbitmq/amqp091-go"
+	"go-backend/app/queue"
 )
 
 type Consumer struct {
@@ -11,7 +10,7 @@ type Consumer struct {
 }
 
 func (c Consumer) StartConsuming(queueName, key string) (<-chan queue.Message, error) {
-	_, err := c.Channel.QueueDeclare(
+	_, err := c.channel.QueueDeclare(
 		queueName,
 		true,
 		false,
@@ -23,7 +22,7 @@ func (c Consumer) StartConsuming(queueName, key string) (<-chan queue.Message, e
 		return nil, err
 	}
 
-	err = c.Channel.QueueBind(
+	err = c.channel.QueueBind(
 		queueName,
 		key,
 		"amq.direct",
@@ -34,7 +33,7 @@ func (c Consumer) StartConsuming(queueName, key string) (<-chan queue.Message, e
 		return nil, err
 	}
 
-	amqpDeliveries, err := c.Connection.Consume(
+	amqpDeliveries, err := c.channel.Consume(
 		queueName,
 		"",
 		false,

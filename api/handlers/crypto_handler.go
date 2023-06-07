@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
-	"go-backend/interfaces/db"
-	"go-backend/model"
+	"go-backend/persistence/db/model"
+	"go-backend/service"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -17,12 +17,12 @@ type CryptoHandler interface {
 }
 
 type cryptoHandler struct {
-	store db.CryptoStore
+	service service.CryptoService
 }
 
-func NewCryptoHandler(store db.CryptoStore) CryptoHandler {
+func NewCryptoHandler(service service.CryptoService) CryptoHandler {
 	return cryptoHandler{
-		store: store,
+		service: service,
 	}
 }
 
@@ -36,7 +36,7 @@ func (c cryptoHandler) Get() http.HandlerFunc {
 			return
 		}
 
-		crypto, err := c.store.GetByUuid(id)
+		crypto, err := c.service.GetByUuid(id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -54,7 +54,7 @@ func (c cryptoHandler) Create() http.HandlerFunc {
 			Name: r.FormValue("name"),
 		}
 
-		if err := c.store.Create(crypto); err != nil {
+		if err := c.service.Create(crypto); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -73,7 +73,7 @@ func (c cryptoHandler) Delete() http.HandlerFunc {
 			return
 		}
 
-		if err := c.store.Delete(id); err != nil {
+		if err := c.service.Delete(id); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}

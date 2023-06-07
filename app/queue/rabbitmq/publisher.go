@@ -12,7 +12,7 @@ type Publisher struct {
 }
 
 func (p Publisher) Publish(ctx context.Context, routingKey string, data []byte) error {
-	return p.Channel.PublishWithContext(
+	return p.channel.PublishWithContext(
 		ctx,
 		"amq.direct",
 		routingKey,

@@ -3,7 +3,7 @@ package rabbitmq
 import amqp "github.com/rabbitmq/amqp091-go"
 
 type Connection struct {
-	*amqp.Channel
+	channel *amqp.Channel
 }
 
 func GetConnection(url string) (Connection, error) {
@@ -14,6 +14,6 @@ func GetConnection(url string) (Connection, error) {
 
 	channel, err := conn.Channel()
 	return Connection{
-		Channel: channel,
+		channel: channel,
 	}, err
 }
