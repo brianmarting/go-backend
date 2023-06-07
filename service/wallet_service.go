@@ -1,8 +1,9 @@
 package service
 
 import (
-	"github.com/google/uuid"
 	"go-backend/persistence/db/model"
+
+	"github.com/google/uuid"
 )
 
 type WalletStore interface {

@@ -2,9 +2,10 @@ package queue
 
 import (
 	"encoding/json"
-	"github.com/rs/zerolog/log"
 	"go-backend/api/model"
 	"go-backend/service"
+
+	"github.com/rs/zerolog/log"
 )
 
 type WithdrawalConsumer interface {

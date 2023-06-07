@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/rs/zerolog"
 	"go-backend/api"
 	"go-backend/app/queue"
 	queue2 "go-backend/facade/queue"
 	"go-backend/persistence/db"
 	"go-backend/service"
 	"net/http"
+
+	"github.com/rs/zerolog"
 )
 
 func main() {

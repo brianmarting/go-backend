@@ -2,9 +2,10 @@ package queue
 
 import (
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"go-backend/app/queue/rabbitmq"
 	"os"
+
+	"github.com/rs/zerolog/log"
 )
 
 func NewPublisher() *rabbitmq.Publisher {
