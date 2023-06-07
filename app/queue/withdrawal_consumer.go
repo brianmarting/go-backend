@@ -9,7 +9,7 @@ import (
 )
 
 type WithdrawalConsumer interface {
-	StartConsuming()
+	Start()
 }
 
 type withdrawalConsumer struct {
@@ -24,7 +24,7 @@ func NewWithdrawalConsumer(consumer Consumer, withdrawalService service.Withdraw
 	}
 }
 
-func (c withdrawalConsumer) StartConsuming() {
+func (c withdrawalConsumer) Start() {
 	messages, err := c.consumer.StartConsuming("withdrawRequests", "withdraw.request")
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to start consuming")
