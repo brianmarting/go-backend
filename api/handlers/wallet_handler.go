@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"encoding/json"
@@ -10,11 +10,22 @@ import (
 	"github.com/google/uuid"
 )
 
-type WalletHandler struct {
-	Store db.WalletStore
+type WalletHandler interface {
+	Get() http.HandlerFunc
+	Create() http.HandlerFunc
 }
 
-func (h *WalletHandler) Get() http.HandlerFunc {
+type walletHandler struct {
+	store db.WalletStore
+}
+
+func NewWalletHandler(store db.WalletStore) WalletHandler {
+	return walletHandler{
+		store: store,
+	}
+}
+
+func (h walletHandler) Get() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		idString := chi.URLParam(r, "id")
 
@@ -24,7 +35,7 @@ func (h *WalletHandler) Get() http.HandlerFunc {
 			return
 		}
 
-		wallet, err := h.Store.GetByUuid(id)
+		wallet, err := h.store.GetByUuid(id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -35,14 +46,14 @@ func (h *WalletHandler) Get() http.HandlerFunc {
 	}
 }
 
-func (h *WalletHandler) Create() http.HandlerFunc {
+func (h walletHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		wallet := model.Wallet{
 			Uuid:    uuid.New(),
 			Address: uuid.NewString(),
 		}
 
-		if err := h.Store.Create(wallet); err != nil {
+		if err := h.store.Create(wallet); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}

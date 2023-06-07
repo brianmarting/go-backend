@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"encoding/json"
@@ -10,11 +10,23 @@ import (
 	"github.com/google/uuid"
 )
 
-type CryptoHandler struct {
-	Store db.CryptoStore
+type CryptoHandler interface {
+	Get() http.HandlerFunc
+	Create() http.HandlerFunc
+	Delete() http.HandlerFunc
 }
 
-func (c *CryptoHandler) Get() http.HandlerFunc {
+type cryptoHandler struct {
+	store db.CryptoStore
+}
+
+func NewCryptoHandler(store db.CryptoStore) CryptoHandler {
+	return cryptoHandler{
+		store: store,
+	}
+}
+
+func (c cryptoHandler) Get() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		idString := chi.URLParam(r, "id")
 
@@ -24,7 +36,7 @@ func (c *CryptoHandler) Get() http.HandlerFunc {
 			return
 		}
 
-		crypto, err := c.Store.GetByUuid(id)
+		crypto, err := c.store.GetByUuid(id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -35,14 +47,14 @@ func (c *CryptoHandler) Get() http.HandlerFunc {
 	}
 }
 
-func (c *CryptoHandler) Create() http.HandlerFunc {
+func (c cryptoHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		crypto := model.Crypto{
 			Uuid: uuid.New(),
 			Name: r.FormValue("name"),
 		}
 
-		if err := c.Store.Create(crypto); err != nil {
+		if err := c.store.Create(crypto); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -51,7 +63,7 @@ func (c *CryptoHandler) Create() http.HandlerFunc {
 	}
 }
 
-func (c *CryptoHandler) Delete() http.HandlerFunc {
+func (c cryptoHandler) Delete() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		idString := chi.URLParam(r, "id")
 
@@ -61,7 +73,7 @@ func (c *CryptoHandler) Delete() http.HandlerFunc {
 			return
 		}
 
-		if err := c.Store.Delete(id); err != nil {
+		if err := c.store.Delete(id); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}

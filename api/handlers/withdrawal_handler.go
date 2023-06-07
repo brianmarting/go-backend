@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"context"
@@ -11,13 +11,25 @@ import (
 	"time"
 )
 
-type WithdrawalHandler struct {
-	queue.Publisher
-	db.CryptoStore
-	db.WalletStore
+type WithdrawalHandler interface {
+	Withdraw() http.HandlerFunc
 }
 
-func (h *WithdrawalHandler) Withdraw() http.HandlerFunc {
+type withdrawalHandler struct {
+	publisher   queue.Publisher
+	cryptoStore db.CryptoStore
+	walletStore db.WalletStore
+}
+
+func NewWithdrawalHandler(publisher queue.Publisher, cryptoStore db.CryptoStore, walletStore db.WalletStore) WithdrawalHandler {
+	return withdrawalHandler{
+		publisher:   publisher,
+		cryptoStore: cryptoStore,
+		walletStore: walletStore,
+	}
+}
+
+func (h withdrawalHandler) Withdraw() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var withdrawRequest model.WithdrawalRequest
 
@@ -40,7 +52,7 @@ func (h *WithdrawalHandler) Withdraw() http.HandlerFunc {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
 
-		err = h.Publisher.Publish(ctx, "withdraw.request", wrBytes)
+		err = h.publisher.Publish(ctx, "withdraw.request", wrBytes)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -50,13 +62,13 @@ func (h *WithdrawalHandler) Withdraw() http.HandlerFunc {
 	}
 }
 
-func validateWithdrawRequest(h *WithdrawalHandler, wr model.WithdrawalRequest) error {
-	crypto, err := h.CryptoStore.GetByUuid(wr.CryptoId)
+func validateWithdrawRequest(h withdrawalHandler, wr model.WithdrawalRequest) error {
+	crypto, err := h.cryptoStore.GetByUuid(wr.CryptoId)
 	if err != nil {
 		return err
 	}
 
-	walletFrom, err := h.WalletStore.GetByAddress(wr.FromAddress)
+	walletFrom, err := h.walletStore.GetByAddress(wr.FromAddress)
 	if err != nil {
 		return err
 	}
@@ -67,7 +79,7 @@ func validateWithdrawRequest(h *WithdrawalHandler, wr model.WithdrawalRequest) e
 		return errors.New("the wallet from does not have sufficient funds")
 	}
 
-	walletTo, err := h.WalletStore.GetByAddress(wr.ToAddress)
+	walletTo, err := h.walletStore.GetByAddress(wr.ToAddress)
 	if err != nil {
 		return err
 	}

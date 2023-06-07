@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"context"
@@ -23,9 +23,7 @@ var crypto = model.Crypto{
 
 func TestCryptoHandler_Get(t *testing.T) {
 	cryptoStoreMock := new(mocks.CryptoStoreMock)
-	c := &CryptoHandler{
-		Store: cryptoStoreMock,
-	}
+	c := NewCryptoHandler(cryptoStoreMock)
 	uuid := uuid.New()
 
 	tests := []struct {
@@ -119,9 +117,8 @@ func TestCryptoHandler_Get(t *testing.T) {
 
 func TestCryptoHandler_Create(t *testing.T) {
 	cryptoStoreMock := new(mocks.CryptoStoreMock)
-	c := &CryptoHandler{
-		Store: cryptoStoreMock,
-	}
+	c := NewCryptoHandler(cryptoStoreMock)
+
 	tests := []struct {
 		name         string
 		rec          *httptest.ResponseRecorder
@@ -191,9 +188,8 @@ func TestCryptoHandler_Create(t *testing.T) {
 
 func TestCryptoHandler_Delete(t *testing.T) {
 	cryptoStoreMock := new(mocks.CryptoStoreMock)
-	c := &CryptoHandler{
-		Store: cryptoStoreMock,
-	}
+	c := NewCryptoHandler(cryptoStoreMock)
+
 	uuid := uuid.New()
 	tests := []struct {
 		name         string

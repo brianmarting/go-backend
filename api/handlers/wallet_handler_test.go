@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"context"
@@ -20,9 +20,7 @@ var wallet = model.Wallet{}
 
 func TestWalletHandler_Get(t *testing.T) {
 	walletStoreMock := new(mocks.WalletStoreMock)
-	w := &WalletHandler{
-		Store: walletStoreMock,
-	}
+	w := NewWalletHandler(walletStoreMock)
 	uuid := uuid.New()
 
 	tests := []struct {
@@ -116,9 +114,7 @@ func TestWalletHandler_Get(t *testing.T) {
 
 func TestWalletHandler_Create(t *testing.T) {
 	walletStoreMock := new(mocks.WalletStoreMock)
-	w := &WalletHandler{
-		Store: walletStoreMock,
-	}
+	w := NewWalletHandler(walletStoreMock)
 
 	tests := []struct {
 		name         string

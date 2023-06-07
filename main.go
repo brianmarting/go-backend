@@ -1,13 +1,13 @@
 package main
 
 import (
+	"go-backend/api"
 	_ "go-backend/queue"
-	"go-backend/route"
 	"net/http"
 )
 
 func main() {
-	h := route.NewHandler()
+	h := api.NewHandler()
 	_ = h.CreateAllRoutes()
 	_ = http.ListenAndServe(":8888", h)
 }
