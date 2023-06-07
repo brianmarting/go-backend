@@ -2,11 +2,11 @@ package db
 
 import (
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"go-backend/persistence/db/psql"
 	"sync"
 
 	_ "github.com/lib/pq"
-	"github.com/rs/zerolog/log"
 )
 
 var once sync.Once
@@ -17,15 +17,12 @@ var (
 )
 
 func GetStore() *Store {
-	if store == nil {
-		once.Do(func() {
-			store, storeErr = newStore()
-			if storeErr != nil {
-				log.Fatal().Err(storeErr)
-			}
-		})
-	}
-
+	once.Do(func() {
+		store, storeErr = newStore()
+		if storeErr != nil {
+			log.Fatal().Err(storeErr).Msg("failed to create store")
+		}
+	})
 	return store
 }
 
