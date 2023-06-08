@@ -1,5 +1,5 @@
 package socket
 
 type Listener interface {
-	Start() (<-chan Message, chan<- string, error)
+	Start(done <-chan interface{}) (<-chan Message, chan<- string)
 }

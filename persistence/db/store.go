@@ -2,9 +2,10 @@ package db
 
 import (
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"go-backend/persistence/db/psql"
 	"sync"
+
+	"github.com/rs/zerolog/log"
 
 	_ "github.com/lib/pq"
 )

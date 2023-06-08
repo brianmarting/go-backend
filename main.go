@@ -9,6 +9,9 @@ import (
 	"go-backend/persistence/db"
 	"go-backend/service"
 	"net/http"
+	"os"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/rs/zerolog"
 )
@@ -30,7 +33,10 @@ func main() {
 
 	h := api.NewHandler(store)
 	_ = h.CreateAllRoutes()
-	_ = http.ListenAndServe(":8888", h)
+	err := http.ListenAndServe(":8888", h)
+	if err != nil {
+		log.Info().Err(err).Msg("failed to listen and serve http handler")
+	}
 }
 
 func createWithdrawalConsumer(withdrawalService service.WithdrawalService) queue.WithdrawalConsumer {
@@ -41,8 +47,10 @@ func createWithdrawalConsumer(withdrawalService service.WithdrawalService) queue
 }
 
 func createWithdrawalSocketListener(withdrawalService service.WithdrawalService) socket.WithdrawalSocketListener {
+	port := os.Getenv("TCP_WITHDRAWAL_LISTENER_PORT")
+
 	return socket.NewWithdrawalSocketListener(
-		facadeSocket.NewTcpSocketListener(),
+		facadeSocket.NewTcpSocketListener(port),
 		withdrawalService,
 	)
 }

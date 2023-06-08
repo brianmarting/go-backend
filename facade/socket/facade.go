@@ -4,6 +4,6 @@ import (
 	"go-backend/app/socket/tcp"
 )
 
-func NewTcpSocketListener() tcp.Listener {
-	return tcp.NewListener()
+func NewTcpSocketListener(port string) tcp.Listener {
+	return tcp.NewListener(port)
 }

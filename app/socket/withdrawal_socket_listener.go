@@ -25,13 +25,16 @@ func NewWithdrawalSocketListener(listener Listener, service service.WithdrawalSe
 }
 
 func (w withdrawalSocketListener) Start() {
-	in, out, err := w.listener.Start()
-	if err != nil {
-		log.Info().Err(err).Msg("failed to start withdrawal listener")
-		return
-	}
+	done := make(chan interface{})
+
+	in, out := w.listener.Start(done)
 
 	go func() {
+		defer func() {
+			close(out)
+			close(done)
+		}()
+
 		for msg := range in {
 			wr := &model.WithdrawalRequest{}
 
