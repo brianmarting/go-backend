@@ -1,16 +1,11 @@
 package service
 
 import (
+	"go-backend/internal/persistence/db"
 	"go-backend/internal/persistence/db/model"
 
 	"github.com/google/uuid"
 )
-
-type CryptoStore interface {
-	GetByUuid(id uuid.UUID) (model.Crypto, error)
-	Create(c model.Crypto) error
-	Delete(id uuid.UUID) error
-}
 
 type CryptoService interface {
 	GetByUuid(id uuid.UUID) (model.Crypto, error)
@@ -19,10 +14,10 @@ type CryptoService interface {
 }
 
 type cryptoService struct {
-	cryptoStore CryptoStore
+	cryptoStore db.CryptoStore
 }
 
-func NewCryptoService(store CryptoStore) CryptoService {
+func NewCryptoService(store db.CryptoStore) CryptoService {
 	return cryptoService{
 		cryptoStore: store,
 	}

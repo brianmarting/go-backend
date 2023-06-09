@@ -2,8 +2,8 @@ package api
 
 import (
 	"go-backend/internal/api/handlers"
+	facadeDB "go-backend/internal/facade/db"
 	"go-backend/internal/facade/queue"
-	"go-backend/internal/persistence/db"
 	"go-backend/internal/service"
 	"net/http"
 
@@ -24,19 +24,23 @@ type handler struct {
 	withdrawalHandler handlers.WithdrawalHandler
 }
 
-func NewHandler(store *db.Store) Handler {
+func NewHandler() Handler {
+	var (
+		cryptoStore = facadeDB.NewCryptoStore()
+		walletStore = facadeDB.NewWalletStore()
+	)
 	return handler{
 		Mux: chi.NewMux(),
 		cryptoHandler: handlers.NewCryptoHandler(
-			service.NewCryptoService(store.CryptoStore),
+			service.NewCryptoService(cryptoStore),
 		),
 		walletHandler: handlers.NewWalletHandler(
-			service.NewWalletService(store.WalletStore),
+			service.NewWalletService(walletStore),
 		),
 		withdrawalHandler: handlers.NewWithdrawalHandler(
 			queue.NewPublisher(),
-			store.CryptoStore,
-			store.WalletStore,
+			cryptoStore,
+			walletStore,
 		),
 	}
 }

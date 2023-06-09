@@ -1,4 +1,4 @@
-package db
+package psql
 
 import (
 	"errors"
@@ -23,7 +23,7 @@ func TestCryptoStore_GetByUuid(t *testing.T) {
 	defer db.Close()
 
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
-	s := &CryptoStore{
+	s := &cryptoStore{
 		DB: sqlxDB,
 	}
 
@@ -80,7 +80,7 @@ func TestCryptoStore_Create(t *testing.T) {
 	defer db.Close()
 
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
-	s := &CryptoStore{
+	s := &cryptoStore{
 		DB: sqlxDB,
 	}
 
@@ -123,7 +123,7 @@ func TestCryptoStore_DeleteCrypto(t *testing.T) {
 	defer db.Close()
 
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
-	s := &CryptoStore{
+	s := &cryptoStore{
 		DB: sqlxDB,
 	}
 

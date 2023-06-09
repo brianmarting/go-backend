@@ -4,9 +4,9 @@ import (
 	"go-backend/internal/api"
 	"go-backend/internal/app/queue"
 	"go-backend/internal/app/socket"
+	facadeDB "go-backend/internal/facade/db"
 	facadeQueue "go-backend/internal/facade/queue"
 	facadeSocket "go-backend/internal/facade/socket"
-	"go-backend/internal/persistence/db"
 	"go-backend/internal/service"
 	"net/http"
 	"os"
@@ -19,10 +19,8 @@ import (
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 
-	store := db.GetStore()
-
 	withdrawalService := service.NewWithdrawalService(
-		service.NewWalletService(store.WalletStore),
+		service.NewWalletService(facadeDB.NewWalletStore()),
 	)
 
 	consumer := createWithdrawalConsumer(withdrawalService)
@@ -31,7 +29,7 @@ func main() {
 	withdrawalSocketListener := createWithdrawalSocketListener(withdrawalService)
 	withdrawalSocketListener.Start()
 
-	h := api.NewHandler(store)
+	h := api.NewHandler()
 	_ = h.CreateAllRoutes()
 	err := http.ListenAndServe(":8888", h)
 	if err != nil {

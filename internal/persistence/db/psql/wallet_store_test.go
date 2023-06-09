@@ -1,4 +1,4 @@
-package db
+package psql
 
 import (
 	"errors"
@@ -21,7 +21,7 @@ func TestWalletStore_GetByUuid(t *testing.T) {
 	defer db.Close()
 
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
-	s := &WalletStore{
+	s := &walletStore{
 		DB: sqlxDB,
 	}
 
@@ -78,7 +78,7 @@ func TestWalletStore_GetByAddress(t *testing.T) {
 	defer db.Close()
 
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
-	s := &WalletStore{
+	s := &walletStore{
 		DB: sqlxDB,
 	}
 
@@ -135,7 +135,7 @@ func TestWalletStore_Create(t *testing.T) {
 	defer db.Close()
 
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
-	s := &WalletStore{
+	s := &walletStore{
 		DB: sqlxDB,
 	}
 
@@ -178,7 +178,7 @@ func TestWalletStore_UpdateAmountById(t *testing.T) {
 	defer db.Close()
 
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
-	s := &WalletStore{
+	s := &walletStore{
 		DB: sqlxDB,
 	}
 

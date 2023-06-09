@@ -1,15 +1,11 @@
 package service
 
 import (
+	"go-backend/internal/persistence/db"
 	"go-backend/internal/persistence/db/model"
 
 	"github.com/google/uuid"
 )
-
-type UserStore interface {
-	GetByUuid(id uuid.UUID) (model.User, error)
-	Create(u model.User) error
-}
 
 type UserService interface {
 	GetByUuid(id uuid.UUID) (model.User, error)
@@ -17,10 +13,10 @@ type UserService interface {
 }
 
 type userService struct {
-	store UserStore
+	store db.UserStore
 }
 
-func NewUserService(store UserStore) UserService {
+func NewUserService(store db.UserStore) UserService {
 	return userService{
 		store: store,
 	}

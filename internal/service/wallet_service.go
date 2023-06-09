@@ -1,17 +1,11 @@
 package service
 
 import (
+	"go-backend/internal/persistence/db"
 	"go-backend/internal/persistence/db/model"
 
 	"github.com/google/uuid"
 )
-
-type WalletStore interface {
-	GetByUuid(id uuid.UUID) (model.Wallet, error)
-	GetByAddress(address string) (model.Wallet, error)
-	UpdateAmountById(id int, amount int) error
-	Create(w model.Wallet) error
-}
 
 type WalletService interface {
 	GetByUuid(id uuid.UUID) (model.Wallet, error)
@@ -21,10 +15,10 @@ type WalletService interface {
 }
 
 type walletService struct {
-	walletStore WalletStore
+	walletStore db.WalletStore
 }
 
-func NewWalletService(store WalletStore) WalletService {
+func NewWalletService(store db.WalletStore) WalletService {
 	return walletService{
 		walletStore: store,
 	}

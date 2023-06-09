@@ -1,4 +1,4 @@
-package db
+package psql
 
 import (
 	"errors"
@@ -22,7 +22,7 @@ func TestUserStore_GetByUuid(t *testing.T) {
 	defer db.Close()
 
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
-	s := &UserStore{
+	s := &userStore{
 		DB: sqlxDB,
 	}
 
@@ -79,7 +79,7 @@ func TestUserStore_Create(t *testing.T) {
 	defer db.Close()
 
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
-	s := &UserStore{
+	s := &userStore{
 		DB: sqlxDB,
 	}
 
