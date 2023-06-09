@@ -7,6 +7,8 @@ import (
 	"go-backend/internal/service"
 	"net/http"
 
+	"github.com/riandyrn/otelchi"
+
 	"github.com/go-chi/chi/v5"
 )
 
@@ -46,6 +48,8 @@ func NewHandler() Handler {
 }
 
 func (h handler) CreateAllRoutes() Handler {
+	h.Use(otelchi.Middleware("otel-server", otelchi.WithChiRoutes(h)))
+
 	h.Route("/crypto", func(router chi.Router) {
 		router.Get("/{id}", h.cryptoHandler.Get())
 		router.Post("/", h.cryptoHandler.Create())

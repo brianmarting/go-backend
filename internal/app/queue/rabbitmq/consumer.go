@@ -1,7 +1,10 @@
 package rabbitmq
 
 import (
+	"errors"
 	"go-backend/internal/app/queue"
+
+	"github.com/rs/zerolog/log"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -11,9 +14,10 @@ type Consumer struct {
 }
 
 func NewConsumer(url string) (*Consumer, error) {
+	log.Info().Msg("url is " + url)
 	conn, err := GetConnection(url)
 	if err != nil {
-		return &Consumer{}, nil
+		return &Consumer{}, errors.New("failed to get rabbitmq connection")
 	}
 
 	return &Consumer{

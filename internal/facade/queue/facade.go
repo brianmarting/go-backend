@@ -20,7 +20,7 @@ func NewPublisher() *rabbitmq.Publisher {
 func NewConsumer() *rabbitmq.Consumer {
 	consumer, err := rabbitmq.NewConsumer(getUrl())
 	if err != nil {
-		log.Fatal().Msg("failed to create consumer")
+		log.Fatal().Err(err).Msg("failed to create consumer")
 	}
 
 	return consumer

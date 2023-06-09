@@ -1,6 +1,23 @@
 services:
 
-  psql-db:
+  go-backend:
+    image: go-backend:latest
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PASSWORD: guest
+      RABBITMQ_USERNAME: guest
+      DB_HOST: psql
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      TCP_WITHDRAWAL_LISTENER_PORT: 8000
+      OTLP_ENDPOINT: localhost:4318
+    ports:
+      - 8000:8000
+      - 8888:8888
+    depends_on:
+      - jaeger
+
+  psql:
     image: postgres:latest
     restart: always
     volumes:
@@ -20,3 +37,17 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest-arm64
+    command: [ --config=/etc/otel-collector-config.yaml ]
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yaml
+    ports:
+      - 4318:4318
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.46.0
+    ports:
+      - 4317
+      - 16686:16686

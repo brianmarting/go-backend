@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"go-backend/internal/api"
 	"go-backend/internal/app/queue"
 	"go-backend/internal/app/socket"
 	facadeDB "go-backend/internal/facade/db"
 	facadeQueue "go-backend/internal/facade/queue"
 	facadeSocket "go-backend/internal/facade/socket"
+	"go-backend/internal/observability/tracing"
 	"go-backend/internal/service"
 	"net/http"
 	"os"
@@ -17,6 +19,12 @@ import (
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	tracer := tracing.InitTracer()
+	defer func() {
+		if err := tracer.Shutdown(context.Background()); err != nil {
+			log.Info().Err(err).Msg("failed to shut down tracer provider")
+		}
+	}()
 
 	withdrawalService := service.NewWithdrawalService(
 		service.NewWalletService(facadeDB.NewWalletStore()),
