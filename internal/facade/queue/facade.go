@@ -2,14 +2,14 @@ package queue
 
 import (
 	"fmt"
-	rabbitmq2 "go-backend/internal/app/queue/rabbitmq"
+	"go-backend/internal/app/queue/rabbitmq"
 	"os"
 
 	"github.com/rs/zerolog/log"
 )
 
-func NewPublisher() *rabbitmq2.Publisher {
-	pub, err := rabbitmq2.NewPublisher(getUrl())
+func NewPublisher() *rabbitmq.Publisher {
+	pub, err := rabbitmq.NewPublisher(getUrl())
 	if err != nil {
 		log.Panic().Msg("failed to create publisher")
 	}
@@ -17,8 +17,8 @@ func NewPublisher() *rabbitmq2.Publisher {
 	return pub
 }
 
-func NewConsumer() *rabbitmq2.Consumer {
-	consumer, err := rabbitmq2.NewConsumer(getUrl())
+func NewConsumer() *rabbitmq.Consumer {
+	consumer, err := rabbitmq.NewConsumer(getUrl())
 	if err != nil {
 		log.Fatal().Msg("failed to create consumer")
 	}

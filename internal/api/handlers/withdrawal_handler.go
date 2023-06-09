@@ -6,7 +6,7 @@ import (
 	"errors"
 	"go-backend/internal/api/model"
 	"go-backend/internal/app/queue"
-	service2 "go-backend/internal/service"
+	"go-backend/internal/service"
 	"net/http"
 	"time"
 )
@@ -17,14 +17,14 @@ type WithdrawalHandler interface {
 
 type withdrawalHandler struct {
 	publisher     queue.Publisher
-	cryptoService service2.CryptoService
-	walletService service2.WalletService
+	cryptoService service.CryptoService
+	walletService service.WalletService
 }
 
 func NewWithdrawalHandler(
 	publisher queue.Publisher,
-	cryptoService service2.CryptoService,
-	walletService service2.WalletService,
+	cryptoService service.CryptoService,
+	walletService service.WalletService,
 ) WithdrawalHandler {
 	return withdrawalHandler{
 		publisher:     publisher,

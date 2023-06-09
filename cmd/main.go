@@ -7,7 +7,7 @@ import (
 	facadeQueue "go-backend/internal/facade/queue"
 	facadeSocket "go-backend/internal/facade/socket"
 	"go-backend/internal/persistence/db"
-	service2 "go-backend/internal/service"
+	"go-backend/internal/service"
 	"net/http"
 	"os"
 
@@ -21,8 +21,8 @@ func main() {
 
 	store := db.GetStore()
 
-	withdrawalService := service2.NewWithdrawalService(
-		service2.NewWalletService(store.WalletStore),
+	withdrawalService := service.NewWithdrawalService(
+		service.NewWalletService(store.WalletStore),
 	)
 
 	consumer := createWithdrawalConsumer(withdrawalService)
@@ -39,14 +39,14 @@ func main() {
 	}
 }
 
-func createWithdrawalConsumer(withdrawalService service2.WithdrawalService) queue.WithdrawalConsumer {
+func createWithdrawalConsumer(withdrawalService service.WithdrawalService) queue.WithdrawalConsumer {
 	return queue.NewWithdrawalConsumer(
 		facadeQueue.NewConsumer(),
 		withdrawalService,
 	)
 }
 
-func createWithdrawalSocketListener(withdrawalService service2.WithdrawalService) socket.WithdrawalSocketListener {
+func createWithdrawalSocketListener(withdrawalService service.WithdrawalService) socket.WithdrawalSocketListener {
 	port := os.Getenv("TCP_WITHDRAWAL_LISTENER_PORT")
 
 	return socket.NewWithdrawalSocketListener(
