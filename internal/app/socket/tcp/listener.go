@@ -54,8 +54,8 @@ func start(port string, in chan<- socket.Message, out <-chan string, done <-chan
 				}
 				msg, err := bufio.NewReader(conn).ReadString('\n')
 				if err != nil {
-					log.Info().Err(err).Msg("something went wrong when reading tcp msg")
-					continue
+					log.Info().Err(err).Msg("something went wrong when reading connection, disconnecting...")
+					return
 				}
 
 				in <- convertToMessage(msg)
