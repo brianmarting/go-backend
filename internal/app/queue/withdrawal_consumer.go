@@ -37,12 +37,18 @@ func (c withdrawalConsumer) Start() {
 
 			if err := json.Unmarshal(message.GetBytes(), wr); err != nil {
 				log.Info().Err(err).Msg("failed to parse data")
+				if err = message.Nack(); err != nil {
+					log.Info().Err(err).Msg("failed to nack msg")
+				}
 				continue
 			}
 
 			err := c.withdrawalService.Withdraw(wr)
 			if err != nil {
 				log.Info().Err(err).Msg("failed to process withdraw request")
+				if err = message.Nack(); err != nil {
+					log.Info().Err(err).Msg("failed to nack msg")
+				}
 				continue
 			}
 

@@ -1,8 +1,10 @@
 package socket
 
 import (
+	"context"
 	"encoding/json"
 	"go-backend/internal/api/model"
+	"go-backend/internal/observability/tracing"
 	"go-backend/internal/service"
 
 	"github.com/rs/zerolog/log"
@@ -36,22 +38,30 @@ func (w withdrawalSocketListener) Start() {
 		}()
 
 		for msg := range in {
-			wr := &model.WithdrawalRequest{}
-
-			if err := json.Unmarshal(msg.GetBody(), wr); err != nil {
-				log.Info().Err(err).Msg("failed to parse tcp inbound body")
-				out <- "NACK"
-				continue
-			}
-
-			err := w.withdrawalService.Withdraw(wr)
-			if err != nil {
-				log.Info().Err(err).Msg("failed to process withdraw request")
-				out <- "NACK"
-				continue
-			}
-
-			out <- "ACK"
+			handleMessage(msg, out, w)
 		}
 	}()
+}
+
+func handleMessage(msg Message, out chan<- string, w withdrawalSocketListener) {
+	tracer := tracing.GetTracer()
+	_, span := tracer.Start(context.Background(), "receive-withdrawal-msg-tcp-socket")
+	defer span.End()
+
+	wr := &model.WithdrawalRequest{}
+
+	if err := json.Unmarshal(msg.GetBody(), wr); err != nil {
+		log.Info().Err(err).Msg("failed to parse tcp inbound body, sending nack")
+		out <- "NACK"
+		return
+	}
+
+	err := w.withdrawalService.Withdraw(wr)
+	if err != nil {
+		log.Info().Err(err).Msg("failed to process withdraw request")
+		out <- "NACK"
+		return
+	}
+
+	out <- "ACK"
 }

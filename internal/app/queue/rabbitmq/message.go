@@ -13,3 +13,7 @@ func (m Message) GetBytes() []byte {
 func (m Message) Ack() error {
 	return m.Acknowledger.Ack(m.DeliveryTag, false)
 }
+
+func (m Message) Nack() error {
+	return m.Acknowledger.Nack(m.DeliveryTag, false, false)
+}

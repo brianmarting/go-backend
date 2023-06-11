@@ -2,6 +2,8 @@ package tracing
 
 import (
 	"context"
+	"os"
+
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -10,7 +12,6 @@ import (
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
-	"os"
 )
 
 func InitTracerProvider() *trace.TracerProvider {
