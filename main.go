@@ -19,12 +19,15 @@ import (
 
 func main() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	tracer := tracing.InitTracer()
-	defer func() {
-		if err := tracer.Shutdown(context.Background()); err != nil {
-			log.Info().Err(err).Msg("failed to shut down tracer provider")
-		}
-	}()
+
+	if "dev" != os.Getenv("ENVIRONMENT") {
+		tracer := tracing.InitTracer()
+		defer func() {
+			if err := tracer.Shutdown(context.Background()); err != nil {
+				log.Info().Err(err).Msg("failed to shut down tracer provider")
+			}
+		}()
+	}
 
 	withdrawalService := service.NewWithdrawalService(
 		service.NewWalletService(facadeDB.NewWalletStore()),
