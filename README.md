@@ -23,4 +23,4 @@ You also need to run the `docker-compose.yml` file in order to start the psql an
 Tracing is being done by using the `otlphttptrace` package, meaning that the application will send traces via http to the set location. \
 This being done in the otlp format, and is being sent to an otel collector. In the collector it is being logged and being forwarded in the
 same otlp format to the given ingester, in this case being jaeger. \
-This can be viewed when running the `docker-compose.yml` together with `docker-compose-observability.yml` and going to `http://localhost:16686/` (jaeger UI).
+This can be viewed when running the `docker-compose.yml` and going to `http://localhost:16686/` (jaeger UI).
