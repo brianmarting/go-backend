@@ -2,27 +2,28 @@ package rabbitmq
 
 import (
 	"context"
+	"go-backend/internal/app/queue"
 	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-type Publisher struct {
+type publisher struct {
 	*Connection
 }
 
-func NewPublisher(url string) (*Publisher, error) {
+func NewPublisher(url string) (queue.Publisher, error) {
 	conn, err := GetConnection(url)
 	if err != nil {
-		return &Publisher{}, nil
+		return publisher{}, nil
 	}
 
-	return &Publisher{
+	return publisher{
 		Connection: &conn,
 	}, nil
 }
 
-func (p Publisher) Publish(ctx context.Context, routingKey string, data []byte) error {
+func (p publisher) Publish(ctx context.Context, routingKey string, data []byte) error {
 	return p.channel.PublishWithContext(
 		ctx,
 		"amq.direct",

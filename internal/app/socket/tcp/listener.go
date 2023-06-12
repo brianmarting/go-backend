@@ -9,17 +9,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type Listener struct {
+type listener struct {
 	port string
 }
 
-func NewListener(port string) Listener {
-	return Listener{
+func NewListener(port string) socket.Listener {
+	return listener{
 		port: port,
 	}
 }
 
-func (l Listener) Start(done <-chan interface{}) (<-chan socket.Message, chan<- string) {
+func (l listener) Start(done <-chan interface{}) (<-chan socket.Message, chan<- string) {
 	in := make(chan socket.Message)
 	out := make(chan string)
 

@@ -9,23 +9,23 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-type Consumer struct {
+type consumer struct {
 	*Connection
 }
 
-func NewConsumer(url string) (*Consumer, error) {
+func NewConsumer(url string) (queue.Consumer, error) {
 	log.Info().Msg("url is " + url)
 	conn, err := GetConnection(url)
 	if err != nil {
-		return &Consumer{}, errors.New("failed to get rabbitmq connection")
+		return consumer{}, errors.New("failed to get rabbitmq connection")
 	}
 
-	return &Consumer{
+	return consumer{
 		Connection: &conn,
 	}, nil
 }
 
-func (c Consumer) StartConsuming(queueName, key string) (<-chan queue.Message, error) {
+func (c consumer) StartConsuming(queueName, key string) (<-chan queue.Message, error) {
 	_, err := c.channel.QueueDeclare(
 		queueName,
 		true,
