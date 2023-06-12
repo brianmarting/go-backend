@@ -1,8 +1,10 @@
 package queue
 
 import (
+	"context"
 	"encoding/json"
 	"go-backend/internal/api/model"
+	"go-backend/internal/observability/tracing"
 	"go-backend/internal/service"
 
 	"github.com/rs/zerolog/log"
@@ -33,28 +35,36 @@ func (c withdrawalConsumer) Start() {
 
 	go func() {
 		for message := range messages {
-			wr := &model.WithdrawalRequest{}
-
-			if err := json.Unmarshal(message.GetBytes(), wr); err != nil {
-				log.Info().Err(err).Msg("failed to parse data")
-				if err = message.Nack(); err != nil {
-					log.Info().Err(err).Msg("failed to nack msg")
-				}
-				continue
-			}
-
-			err := c.withdrawalService.Withdraw(wr)
-			if err != nil {
-				log.Info().Err(err).Msg("failed to process withdraw request")
-				if err = message.Nack(); err != nil {
-					log.Info().Err(err).Msg("failed to nack msg")
-				}
-				continue
-			}
-
-			if err = message.Ack(); err != nil {
-				log.Info().Err(err).Msg("failed to ack")
-			}
+			handleMessage(c, message)
 		}
 	}()
+}
+
+func handleMessage(c withdrawalConsumer, message Message) {
+	tracer := tracing.GetTracer()
+	_, span := tracer.Start(context.Background(), "receive-withdrawal-msg-queue")
+	defer span.End()
+
+	wr := &model.WithdrawalRequest{}
+
+	if err := json.Unmarshal(message.GetBytes(), wr); err != nil {
+		log.Info().Err(err).Msg("failed to parse data")
+		if err = message.Nack(); err != nil {
+			log.Info().Err(err).Msg("failed to nack msg")
+		}
+		return
+	}
+
+	err := c.withdrawalService.Withdraw(wr)
+	if err != nil {
+		log.Info().Err(err).Msg("failed to process withdraw request")
+		if err = message.Nack(); err != nil {
+			log.Info().Err(err).Msg("failed to nack msg")
+		}
+		return
+	}
+
+	if err = message.Ack(); err != nil {
+		log.Info().Err(err).Msg("failed to ack")
+	}
 }
