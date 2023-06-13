@@ -13,10 +13,11 @@ import (
 	pb "go-backend/internal/grpc/generated"
 	"go-backend/internal/observability/tracing"
 	"go-backend/internal/service"
-	googleGrpc "google.golang.org/grpc"
 	"net"
 	"net/http"
 	"os"
+
+	googleGrpc "google.golang.org/grpc"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
