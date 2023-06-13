@@ -8,13 +8,14 @@ By default when running, it will:
 - try to connect to psql
 - try to connect to rabbitmq and create queues in order to listen for withdrawal requests
 - sets up a tcp server on the given port, listening for withdrawal requests from external parties
+- create a grpc stream to receive requests
 
 ## Running
 
 When running the application, you will need to provide env variables. The following can be used:
 
 ```
-DB_HOST=localhost;DB_PASSWORD=postgres;DB_USERNAME=postgres;RABBITMQ_HOST=localhost;RABBITMQ_PASSWORD=guest;RABBITMQ_USERNAME=guest;TCP_WITHDRAWAL_LISTENER_PORT=8000;ENVIRONMENT=dev
+DB_HOST=localhost;DB_PASSWORD=postgres;DB_USERNAME=postgres;ENVIRONMENT=dev;OTLP_ENDPOINT=127.0.0.1:4318;RABBITMQ_HOST=localhost;RABBITMQ_PASSWORD=guest;RABBITMQ_USERNAME=guest;TCP_WITHDRAWAL_LISTENER_PORT=8000;GRPC_PORT=8100
 ```
 You also need to run the `docker-compose.yml` file in order to start the psql and the rabbitmq instance so that the application can start.
 
@@ -24,3 +25,7 @@ Tracing is being done by using the `otlphttptrace` package, meaning that the app
 This being done in the otlp format, and is being sent to an otel collector. In the collector it is being logged and being forwarded in the
 same otlp format to the given ingester, in this case being jaeger. \
 This can be viewed when running the `docker-compose.yml` and going to `http://localhost:16686/` (jaeger UI).
+
+## Grpc
+
+When using grpc, run the command `protoc --go_out=generated --go-grpc_out=generated *.proto` in the grpc folder to generate the proto files.

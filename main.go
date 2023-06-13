@@ -2,14 +2,19 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"go-backend/internal/api"
 	"go-backend/internal/app/queue"
 	"go-backend/internal/app/socket"
 	facadeDB "go-backend/internal/facade/db"
 	facadeQueue "go-backend/internal/facade/queue"
 	facadeSocket "go-backend/internal/facade/socket"
+	grpc "go-backend/internal/grpc"
+	pb "go-backend/internal/grpc/generated"
 	"go-backend/internal/observability/tracing"
 	"go-backend/internal/service"
+	googleGrpc "google.golang.org/grpc"
+	"net"
 	"net/http"
 	"os"
 
@@ -37,11 +42,27 @@ func main() {
 	withdrawalSocketListener := createWithdrawalSocketListener(withdrawalService)
 	withdrawalSocketListener.Start()
 
+	go startGrpcServer(withdrawalService)
+
 	h := api.NewHandler()
 	_ = h.CreateAllRoutes()
 	err := http.ListenAndServe(":8888", h)
 	if err != nil {
 		log.Info().Err(err).Msg("failed to listen and serve http handler")
+	}
+}
+
+func startGrpcServer(service service.WithdrawalService) {
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", os.Getenv("GRPC_PORT")))
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to start grpc server listener")
+	}
+
+	grpcServer := googleGrpc.NewServer()
+	pb.RegisterWithdrawalServiceServer(grpcServer, grpc.NewGrpcWithdrawalServer(service))
+	err = grpcServer.Serve(listener)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to start grpc server")
 	}
 }
 

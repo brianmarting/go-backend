@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package grpc;
+
+option go_package = "./";
+
+message UUID {
+  string value = 1;
+}
+
+message WithdrawRequest {
+  UUID cryptoId = 1;
+  string fromAddress = 2;
+  string toAddress = 3;
+  int32 amount = 4;
+}
+
+message WithdrawRequestResult {
+  string result = 1;
+}
+
+service WithdrawalService {
+
+  rpc SendStreaming(stream WithdrawRequest) returns (WithdrawRequestResult) {}
+}
