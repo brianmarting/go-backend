@@ -70,7 +70,7 @@ func start(port string, in chan<- socket.Message, out <-chan string, done <-chan
 }
 
 func convertToMessage(message string) socket.Message {
-	return Message{
-		body: []byte(message),
-	}
+	return NewMessage(
+		[]byte(message),
+	)
 }
